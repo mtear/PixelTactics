@@ -1,0 +1,16 @@
+﻿<Properties StartupItem="PixelTactics/PixelTactics2.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PixelTactics/TODO.cs">
+    <Files>
+      <File FileName="PixelTactics/TODO.cs" Line="5" Column="4" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Volumes/SD/PixelTactics2/PixelTactics/TriggerAbilities.cs" line="62" column="67" />
+      <Breakpoint file="/Volumes/SD/PixelTactics2/PixelTactics/TriggerAbilities.cs" line="78" column="34" />
+      <Breakpoint file="/Volumes/SD/PixelTactics2/PixelTactics/TriggerAbilities.cs" line="94" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

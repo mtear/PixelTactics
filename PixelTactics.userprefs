@@ -1,0 +1,21 @@
+﻿<Properties StartupItem="PixelTactics/PixelTactics.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PixelTactics/ActiveAbilities.cs">
+    <Files>
+      <File FileName="PixelTactics/Program.cs" Line="62" Column="42" />
+      <File FileName="PixelTactics/UnitCharacter.cs" Line="1" Column="1" />
+      <File FileName="PixelTactics/Ability.cs" Line="1" Column="1" />
+      <File FileName="PixelTactics/GameBoard.cs" Line="583" Column="15" />
+      <File FileName="PixelTactics/Character.cs" Line="1" Column="1" />
+      <File FileName="PixelTactics/Command.cs" Line="174" Column="7" />
+      <File FileName="PixelTactics/TODO.cs" Line="4" Column="13" />
+      <File FileName="PixelTactics/ActiveAbilities.cs" Line="33" Column="4" />
+      <File FileName="PixelTactics/Hand.cs" Line="59" Column="32" />
+      <File FileName="PixelTactics/Deck.cs" Line="33" Column="76" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

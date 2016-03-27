@@ -170,7 +170,7 @@ namespace PixelTactics
 			try{
 				Command.Execute (c);
 			}catch{return false;}
-			return c == null || c.type != Command.TYPE.PASS;
+			return c == null || c.Type != Command.TYPE.PASS;
 		}
 
 		public void FullAttack(Player P){

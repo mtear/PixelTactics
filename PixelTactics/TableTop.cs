@@ -137,8 +137,8 @@ namespace Tactics_CoreGameEngine
 			if (!VALID)
 				return;
 
-			P.GAMEBOARD.CheckAllDead ();
-			P.ENEMY.GAMEBOARD.CheckAllDead ();
+			P.GAMEBOARD.CheckForDeaths ();
+			P.ENEMY.GAMEBOARD.CheckForDeaths ();
 			CalculateUnitStats (P);
 			CalculateUnitStats (P.ENEMY);
 			PopTrigger (P);
@@ -206,21 +206,21 @@ namespace Tactics_CoreGameEngine
 
 		public void FullAttack(Player P){
 			for (int a = 0; a < COLUMNS; a++) {
-				if (P.GAMEBOARD.BOARD [a,0] != null) {
+				if (P.GAMEBOARD.Board [a,0] != null) {
 					P.GAMEBOARD.Melee (a, 0, a);
 				}
-				if (P.ENEMY.GAMEBOARD.BOARD [a,0] != null) {
+				if (P.ENEMY.GAMEBOARD.Board [a,0] != null) {
 					P.ENEMY.GAMEBOARD.Melee (a, 0, a);
 				}
 			}
 			//Ranged
 			for (int a = 0; a < COLUMNS; a++) {
-				if (P.GAMEBOARD.BOARD [a,1] != null
-					&& !P.GAMEBOARD.BOARD [a,1].IsMelee) {
+				if (P.GAMEBOARD.Board [a,1] != null
+					&& !P.GAMEBOARD.Board [a,1].IsMelee) {
 					P.GAMEBOARD.Melee (a, 1, a);
 				}
-				if (P.ENEMY.GAMEBOARD.BOARD [a,1] != null
-					&& !P.ENEMY.GAMEBOARD.BOARD [a,1].IsMelee) {
+				if (P.ENEMY.GAMEBOARD.Board [a,1] != null
+					&& !P.ENEMY.GAMEBOARD.Board [a,1].IsMelee) {
 					P.ENEMY.GAMEBOARD.Melee (a, 1, a);
 				}
 			}
@@ -242,7 +242,7 @@ namespace Tactics_CoreGameEngine
 				for (int a = 0; a < COLUMNS; a++) {
 					Player A = TP.PLAYER;
 					for(int j = 0; j < 2; j++){ //Go twice for both players
-						Character c = A.GAMEBOARD.BOARD [a, i];
+						Character c = A.GAMEBOARD.Board [a, i];
 						if (c == null) {
 							A = TP.PLAYER.ENEMY;
 							continue;
@@ -299,7 +299,7 @@ namespace Tactics_CoreGameEngine
 							else PIPELINE.Add(TRAPPACKET);
 
 							//discard
-							P.GRAVEYARD.AddCard (traps [i]);
+							P.GRAVEYARD.AddCard (traps [i], 999, null);
 							traps [i] = null;
 						}
 					} else if (traps [i].HandAbility.GetType ().IsSubclassOf (typeof(OnGoing))) {

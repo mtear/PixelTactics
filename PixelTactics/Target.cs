@@ -50,8 +50,8 @@ namespace Tactics_CoreGameEngine
 					int x = int.Parse(chunks[1]);
 					int y = int.Parse(chunks[2]);
 					GameBoard gb = (chunks[0] == "0") ? P.GAMEBOARD : P.ENEMY.GAMEBOARD;
-					if(gb.BOARD[x,y] == null) return null;
-					return new Target(null, gb.BOARD[x,y]);
+					if(gb.Board[x,y] == null) return null;
+					return new Target(null, gb.Board[x,y]);
 				}
 			}catch{}
 			return null;

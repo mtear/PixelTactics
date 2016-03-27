@@ -251,7 +251,7 @@ namespace Tactics_CoreGameEngine
 					break;
 				//Clear a corpse from the playing field
 				case TYPE.CLEARCORPSE:
-					ETP.TP.TARGET = c.PLAYER.GAMEBOARD.BOARD[
+					ETP.TP.TARGET = c.PLAYER.GAMEBOARD.Board[
 							int.Parse(c.Parameters[0]),
 							int.Parse(c.Parameters[1])];
 					ETP.Successful = c.PLAYER.GAMEBOARD.ClearCorpse(

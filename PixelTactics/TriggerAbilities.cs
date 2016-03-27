@@ -31,7 +31,7 @@ namespace Tactics_CoreGameEngine
 /**********************************************************************************
 **********************************************************************************
 * 
-* 										NOTE
+* 					NOTE
 * 
 * 		THIS FILE IS A COLLECTION OF TRIGGER ABILITIES FOR CHARACTERS AND TRAPS
 * 

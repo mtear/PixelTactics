@@ -31,7 +31,7 @@ namespace Tactics_CoreGameEngine
 /**********************************************************************************
 **********************************************************************************
 * 
-* 										NOTE
+* 					NOTE
 * 
 * 		THIS FILE IS A COLLECTION OF PASSIVE ABILITIES FOR CHARACTER EFFECTS
 * 

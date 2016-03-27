@@ -31,7 +31,7 @@ namespace Tactics_CoreGameEngine
 /**********************************************************************************
 **********************************************************************************
 * 
-* 										NOTE
+* 					NOTE
 * 
 * 		THIS FILE IS A COLLECTION OF CHARACTERS THAT ARE THE CARDS OF THE GAME
 * 

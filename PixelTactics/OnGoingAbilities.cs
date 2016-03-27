@@ -32,7 +32,7 @@ namespace Tactics_CoreGameEngine
 /**********************************************************************************
 **********************************************************************************
 * 
-* 										NOTE
+* 					NOTE
 * 
 * 		THIS FILE IS A COLLECTION OF ONGOING EFFECTS FOR CHARACTER HAND ABILITIES
 * 

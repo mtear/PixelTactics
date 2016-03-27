@@ -28,28 +28,42 @@ using System.Collections.Generic;
 
 namespace Tactics_CoreGameEngine
 {
+	/// <summary>
+	/// A class representing a Player's Game Board
+	/// </summary>
 	public class GameBoard
 	{
 
-		public Character[,] BOARD;
-		private int COLUMNS, ROWS;
+		//----------------------------------------------------------------
 
-		public Player OWNER;
-
-		public GameBoard (int COLUMNS, int ROWS, Player OWNER)
-		{
-			this.OWNER = OWNER;
-			this.COLUMNS = COLUMNS; this.ROWS = ROWS;
-			BOARD = new Character[COLUMNS, ROWS];
+		/// <summary>
+		/// Gets a value indicating whether this
+		///  <see cref="Tactics_CoreGameEngine.GameBoard"/> is full.
+		/// </summary>
+		/// <value><c>true</c> if full; otherwise, <c>false</c>.</value>
+		public bool Full{
+			get{
+				for (int i = 0; i < ROWS; i++) {
+					for (int a = 0; a < COLUMNS; a++) {
+						if (Board [a, i] == null)
+							return false;
+					}
+				}
+				return true;
+			}
 		}
 
+		/// <summary>
+		/// Gets the number of corpses in this GameBoard
+		/// </summary>
+		/// <value>The number of corpses.</value>
 		public int NumberOfCorpses{
 			get{
 				int corpses = 0;
 				for (int i = 0; i < ROWS; i++) {
 					for (int a = 0; a < COLUMNS; a++) {
-						if (BOARD [a, i] != null
-						    && BOARD [a, i].Dead)
+						if (Board [a, i] != null
+							&& Board [a, i].Dead)
 							corpses++;
 					}
 				}
@@ -57,13 +71,17 @@ namespace Tactics_CoreGameEngine
 			}
 		}
 
+		/// <summary>
+		/// Gets the number of units in this GameBoard
+		/// </summary>
+		/// <value>The number of units.</value>
 		public int NumberOfUnits{
 			get{
 				int units = 0;
 				for (int i = 0; i < ROWS; i++) {
 					for (int a = 0; a < COLUMNS; a++) {
-						if (BOARD [a, i] != null
-							&& !BOARD [a, i].Dead)
+						if (Board [a, i] != null
+							&& !Board [a, i].Dead)
 							units++;
 					}
 				}
@@ -71,18 +89,390 @@ namespace Tactics_CoreGameEngine
 			}
 		}
 
-		public bool ValidMove(int x1, int y1, int x2, int y2, bool forced){
-			//Check valid openings
-			if (BOARD [x1, y1] == null ||
-				(BOARD [x2, y2] != null && !BOARD[x2,y2].Dead))
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// The matrix of Characters in this GameBoard
+		/// </summary>
+		public Character[,] Board;
+
+		/// <summary>
+		/// The Player that owns this GameBoard
+		/// </summary>
+		public Player Owner;
+
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// The dimensions of this GameBoard
+		/// </summary>
+		private int COLUMNS, ROWS;
+
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// Initializes a new instance of the 
+		/// <see cref="Tactics_CoreGameEngine.GameBoard"/> class.
+		/// </summary>
+		/// <param name="COLUMNS">Board width</param>
+		/// <param name="ROWS">Board height</param>
+		/// <param name="OWNER">The owner Player</param>
+		public GameBoard (int COLUMNS, int ROWS, Player OWNER)
+		{
+			this.Owner = OWNER;
+			this.COLUMNS = COLUMNS; this.ROWS = ROWS;
+			Board = new Character[COLUMNS, ROWS];
+		}
+
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// Triggers the GameBoard to calculate modified unit stats from passives
+		/// </summary>
+		public void CalculateUnitStats(){
+			Owner.RevealHandEffect = CalculateRevealHand ();
+			for (int i = 0; i < ROWS; i++) {
+				for (int a = 0; a < COLUMNS; a++) {
+					if (Board [a, i] != null) {
+						Board [a, i].Attack = CalculateAttack (a, i);
+						Board [a, i].Life = CalculateLife (a, i);
+						Board [a, i].IsMelee = CalculateAttackType(a,i);
+						Board [a, i].Intercept = CalculateIntercept(a,i);
+						Board [a, i].Rooted = CalculateRooted(a,i);
+						Board [a, i].Overkill = CalculateOverkill(a,i);
+						Board [a, i].Armor = CalculateArmor(a,i);
+						Board [a, i].Zombie = CalculateZombie(a,i);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Checks for the deaths of units in this GameBoard
+		/// </summary>
+		public void CheckForDeaths(){
+			for (int i = 0; i < ROWS; i++) {
+				for (int a = 0; a < COLUMNS; a++) {
+					if(Board[a,i] != null) Board [a, i].CheckDead ();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Clears a corpse in this GameBoard
+		/// </summary>
+		/// <returns><c>true</c>, if corpse was cleared,
+		///  <c>false</c> otherwise.</returns>
+		/// <param name="GRAVEYARD">The discard pile</param>
+		/// <param name="x1">The column to remove from</param>
+		/// <param name="y1">The row to remove from</param>
+		public bool ClearCorpse(Hand GRAVEYARD, int x, int y){
+			if (Board [x, y].Dead) {
+				GRAVEYARD.AddCard (Board [x, y], 999, null);
+				Board [x, y] = null;
+				return true;
+			} else
+				return false;
+		}
+
+		/// <summary>
+		/// Whether or not this GameBoard contains the specified Character
+		/// </summary>
+		/// <param name="c">A Character</param>
+		public bool Contains(Character c){
+			for (int i = 0; i < ROWS; i++) {
+				for (int a = 0; a < COLUMNS; a++) {
+					if (Board [a, i] == c)
+						return true;
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Finds a character in melee in the specified column
+		/// </summary>
+		/// <returns>The character in melee.</returns>
+		/// <param name="col">The column</param>
+		public Character FindCharacterInMelee(int col){
+			Character ret = null;
+			for (int i = 0; i < ROWS; i++) {
+				//Look for intercept target in the row
+				Character InterceptTarget = FindInterceptTarget (i);
+				if (InterceptTarget != null) {
+					return InterceptTarget;
+				}
+				//Otherwise look through the column and return the first
+				//	alive Character
+				if (Board [col, i] != null && !Board[col,i].Dead) {
+					return Board [col, i];
+				}
+			}
+			return ret;
+		}
+
+		/// <summary>
+		/// Find any intercept Character in a row if there are any
+		/// </summary>
+		/// <returns>The intercept target, or null if none exist</returns>
+		/// <param name="row">The row to search in</param>
+		public Character FindInterceptTarget(int row){
+			List<Character> interceptors = new List<Character> ();
+			//Gather alive characters with intercept in the row
+			for (int i = 0; i < COLUMNS; i++) {
+				if (Board [i, row] == null || Board[i,row].Dead)
+					continue;
+				if (Board [i, row].Intercept)
+					interceptors.Add (Board [i, row]);
+			}
+			//Pick one at random or return null if none
+			if (interceptors.Count == 0)
+				return null;
+			else
+				return interceptors [Utility.R.Next (interceptors.Count)];
+		}
+
+		/// <summary>
+		/// Gathers the passives from this GameBoard
+		/// </summary>
+		/// <returns>The passives.</returns>
+		public List<PassivePair> GatherPassives(){
+			//Make a returnable list
+			List<PassivePair> ret = new List<PassivePair> ();
+			//Search the board for passives
+			for (int i = 0; i < ROWS; i++) {
+				for (int a = 0; a < COLUMNS; a++) {
+					Character uc1 = Board[a,i];
+					if (uc1 == null)
+						continue;
+					foreach(Passive p in uc1.Passives[i]){
+						ret.Add (new PassivePair (p, uc1));
+					}
+
+				}
+			}
+			//Sort the passives by priority
+			ret.Sort((x,y) => x.p.Priority.CompareTo(y.p.Priority));
+			return ret;
+		}
+
+		/// <summary>
+		/// Determines whether this lane is open the specified column.
+		/// </summary>
+		/// <returns><c>true</c> if this instance is lane open;
+		///  otherwise, <c>false</c>.</returns>
+		/// <param name="attackcolumn">The column to look in</param>
+		public bool IsLaneOpen(int attackcolumn){
+			bool open = true;
+			for(int i = 0; i < ROWS; i++){
+				open = (Board[attackcolumn, i] == null) && open;
+			}
+			return open;
+		}
+
+		/// <summary>
+		/// Locates a Character in the GameBoard
+		/// </summary>
+		/// <returns>The location of the Character in the board,
+		/// or null</returns>
+		/// <param name="c">The Character to look for</param>
+		public Point LocateInBoard(Character c){
+			for (int i = 0; i < ROWS; i++) {
+				for (int a = 0; a < COLUMNS; a++) {
+					if (Board [a, i] == c)
+						return new Point (a, i);
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Perform a melee attack with a character
+		/// </summary>
+		/// <param name="x">The first x value.</param>
+		/// <param name="y">The first y value.</param>
+		/// <param name="col">The target column</param>
+		public bool Melee(int x, int y, int col){
+			//Get the attacker
+			Character attacker = Board [x, y];
+			//Return false if the character can't make an attack
+			if (attacker == null || attacker.Dead || attacker.Stunned)
 				return false;
 
-			if (BOARD [x1, y1].Rooted && !forced
-				|| BOARD[x1, y1].Stunned && !forced)
+			Player ENEMY = Owner.ENEMY;
+			//Get the target for this character to attack
+			Character target = ENEMY.GAMEBOARD.FindCharacterInMelee (col);
+
+			//Create a Damage type
+			Damage.TYPE DT = Damage.TYPE.MELEE;
+			if (!attacker.IsMelee)
+				DT = Damage.TYPE.RANGE;
+
+			//Perform the attack
+			if (target != null) {
+				target.AddDamage (new Damage(DT, attacker.Attack, attacker));
+				//Calculate the Overkill keyword
+				for (int r = 0; r < 2; r++) {
+					if (attacker.Overkill && target.Damage >= target.Life) {
+						int overkilldamage = target.Damage - target.Life;
+						target = ENEMY.GAMEBOARD.FindOverkillTarget (target);
+						if (target != null) {
+							target.AddDamage (new Damage (
+								DT, overkilldamage, attacker));
+						} else {
+							ENEMY.AddDamage (new Damage (
+								DT, overkilldamage, attacker));
+						}
+					}
+				}
+			} else {
+				//If there isn't a Character target, hit the enemy Player
+				ENEMY.AddDamage (new Damage(DT, attacker.Attack, attacker));
+			}
+
+			//Attack successful
+			return true;
+		}
+
+		/// <summary>
+		/// Move the specified Character from x1, y1 to
+		///  x2, y2.
+		/// </summary>
+		/// <param name="x1">The first x value.</param>
+		/// <param name="y1">The first y value.</param>
+		/// <param name="x2">The second x value.</param>
+		/// <param name="y2">The second y value.</param>
+		public bool Move(int x1, int y1, int x2, int y2){
+			//Check valid openings
+			if (Board [x1, y1] == null ||
+				(Board [x2, y2] != null && !Board[x2,y2].Dead))
+				return false;
+			
+			//Check valid action
+			Character c1 = Board [x1, y1];
+			if (c1.Moved || c1.Dead)
+				return false;
+
+			//Clear corpse if needed
+			if(Board[x2,y2] != null && !Board[x2,y2].Dead){
+				Command.Execute (new Command (
+					Command.TYPE.CLEARCORPSE,
+					new string[] { x1.ToString (), y1.ToString () },
+					Owner));
+			}
+			
+			//Move
+			Board[x2,y2] = Board[x1,y1];
+			Board [x1, y1] = null;
+
+			c1.Moved = true;
+			//Successful
+			return true;
+		}
+
+		/// <summary>
+		/// Recruit the a Character from a Player's hand to x,y
+		/// </summary>
+		/// <param name="x">The x value</param>
+		/// <param name="y">The y value.</param>
+		/// <param name="handslot">The card index in the Player's hand</param>
+		/// <param name="PLAYER">The Player</param>
+		public bool Recruit(int x, int y, int handslot, Player PLAYER){
+			//Get the Character from the Hand
+			Character c = PLAYER.HAND.Get (handslot);
+			if (c == null)
+				return false;
+
+			//Check for legal recruitment
+			if (!ValidRecruit (c, x, y)) 
+				return false;
+
+			Character c2 = Board [x, y];
+			//Clear a corpse if there is one there
+			if (c2 != null) {
+				if (c2.Dead) {
+					Command.Execute (new Command (
+						Command.TYPE.CLEARCORPSE,
+						new string[] { x.ToString (),
+							y.ToString () },
+						PLAYER));
+				}
+			}
+			//Place the Character in the board
+			Board [x, y] = c;
+
+			//Perform Post Recruitment effects
+			PostRecruitEffects (c, x, y);
+
+			//Remove the Character from the Player's hand
+			PLAYER.HAND.Discard (c, PLAYER.GRAVEYARD);
+			return true;
+		}
+
+		/// <summary>
+		/// Reset flags from Characters in this GameBoard
+		/// </summary>
+		public void ResetFlags(){
+			for (int i = 0; i < ROWS; i++) {
+				for (int a = 0; a < COLUMNS; a++) {
+					if (Board [a, i] != null) {
+						Board [a, i].Moved = false;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Reset the stunned status for Characters in this GameBoard
+		/// </summary>
+		public void ResetStunned(){
+			for (int i = 0; i < ROWS; i++) {
+				for (int a = 0; a < COLUMNS; a++) {
+					if (Board [a, i] != null) {
+						Board [a, i].Stunned = false;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Determine whether a row contains a Character
+		/// </summary>
+		/// <returns><c>true</c>, if the row contains the Character,
+		/// <c>false</c> otherwise.</returns>
+		/// <param name="c">A Character to look for</param>
+		/// <param name="row">The row to search in</param>
+		public bool RowContains(Character c, int row){
+			for (int i = 0; i < ROWS; i++) {
+				if (Board [i, row] == c)
+					return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Determine if a Move Command is valid or not
+		/// Add a Trigger to the Pipeline if it is
+		/// </summary>
+		/// <returns><c>true</c>, if move was valid,
+		///  <c>false</c> otherwise.</returns>
+		/// <param name="x1">The first x value.</param>
+		/// <param name="y1">The first y value.</param>
+		/// <param name="x2">The second x value.</param>
+		/// <param name="y2">The second y value.</param>
+		/// <param name="forced">Whether the move is a forced move</param>
+		public bool ValidMove(int x1, int y1, int x2, int y2, bool forced){
+			//Check valid openings
+			if (Board [x1, y1] == null ||
+				(Board [x2, y2] != null && !Board[x2,y2].Dead))
+				return false;
+
+			if (Board [x1, y1].Rooted && !forced
+				|| Board[x1, y1].Stunned && !forced)
 				return false;
 
 			//Check valid action
-			Character c1 = BOARD [x1, y1];
+			Character c1 = Board [x1, y1];
 			if (c1.Moved || c1.Dead)
 				return false;
 
@@ -92,42 +482,30 @@ namespace Tactics_CoreGameEngine
 			return true;
 		}
 
-		public bool Move(int x1, int y1, int x2, int y2){
-			//Check valid openings
-			if (BOARD [x1, y1] == null ||
-				(BOARD [x2, y2] != null && !BOARD[x2,y2].Dead))
-				return false;
-			
-			//Check valid action
-			Character c1 = BOARD [x1, y1];
-			if (c1.Moved || c1.Dead)
-				return false;
+		//----------------------------------------------------------------
 
-			//Clear corpse if needed
-			if(BOARD[x2,y2] != null && !BOARD[x2,y2].Dead){
-				Command.Execute (new Command (
-					Command.TYPE.CLEARCORPSE,
-					new string[] { x1.ToString (), y1.ToString () },
-					OWNER));
-			}
-			
-			//Move
-			BOARD[x2,y2] = BOARD[x1,y1];
-			BOARD [x1, y1] = null;
-
-			c1.Moved = true;
-			return true;
+		/// <summary>
+		/// Print the GameBoard
+		/// </summary>
+		/// <param name="flip">Whether or not to invert the board printing</param>
+		public void Print(bool flip){
+			PrintBoard (flip);
+			PrintUnits ();
 		}
 
+		/// <summary>
+		/// Prints the board.
+		/// </summary>
+		/// <param name="flip">Whether or not to invert the board</param>
 		public void PrintBoard(bool flip){
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
 					Console.Write ("[ ");
 					int row = (flip) ? ROWS - i - 1 : i;
-					if (BOARD [a, row] == null) {
+					if (Board [a, row] == null) {
 						Console.Write (" ");
 					} else {
-						if (BOARD [a, row].Dead)
+						if (Board [a, row].Dead)
 							Console.Write ("C");
 						else
 							Console.Write ("X");
@@ -138,160 +516,312 @@ namespace Tactics_CoreGameEngine
 			}
 		}
 
+		/// <summary>
+		/// Prints the units in this GameBoard
+		/// </summary>
 		public void PrintUnits(){
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
-					if (BOARD [a, i] != null) {
+					if (Board [a, i] != null) {
 						Console.Write (a + ", " + i + ": ");
-						Console.WriteLine (BOARD [a, i]);
+						Console.WriteLine (Board [a, i]);
 					}
 				}
 			}
 			Console.WriteLine ();
 		}
 
-		public void Print(bool flip){
-			PrintBoard (flip);
-			PrintUnits ();
-		}
+		//----------------------------------------------------------------
 
-		public Character FindCharacterInMelee(int col){
-			Character ret = null;
-			for (int i = 0; i < ROWS; i++) {
-				//Look for intercept target in the row
-				Character InterceptTarget = FindInterceptTarget (i);
-				if (InterceptTarget != null) {
-					return InterceptTarget;
-				}
+		/// <summary>
+		/// Calculates the armor of a Character
+		/// </summary>
+		/// <returns>The modified armor value</returns>
+		/// <param name="x1">A column</param>
+		/// <param name="y1">A row</param>
+		private int CalculateArmor(int x1, int y1){
+			Character c = Owner.GAMEBOARD.Board [x1, y1];
+			int armor = c.BaseArmor;
+			if (c == null)
+				return armor;
 
-				if (BOARD [col, i] != null && !BOARD[col,i].Dead) {
-					return BOARD [col, i];
-				}
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				armor = pp.p.ModifyArmor (armor, c, pp.c, Owner);
 			}
-			return ret;
-		}
-
-		public Character FindInterceptTarget(int row){
-			List<Character> interceptors = new List<Character> ();
-			//Gather alive characters with intercept in the row
-			for (int i = 0; i < COLUMNS; i++) {
-				if (BOARD [i, row] == null || BOARD[i,row].Dead)
-					continue;
-				if (BOARD [i, row].Intercept)
-					interceptors.Add (BOARD [i, row]);
+			foreach (PassivePair pp in EP) {
+				armor = pp.p.ModifyArmor (armor, c, pp.c, Owner.ENEMY);
 			}
-			//Pick one at random or return null if none
-			if (interceptors.Count == 0)
-				return null;
-			else
-				return interceptors [Utility.R.Next (interceptors.Count)];
+
+			//clamp and return
+			if (armor < 0)
+				armor = 0;
+
+			return armor;
 		}
 
+		/// <summary>
+		/// Calculates the attack of a Character
+		/// </summary>
+		/// <returns>The modified attack power</returns>
+		/// <param name="x1">A column</param>
+		/// <param name="y1">A row</param>
+		private int CalculateAttack(int x1, int y1){
+			Character c = Owner.GAMEBOARD.Board [x1, y1];
+			int damage = c.BaseAttack;
+			if (c == null)
+				return damage;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				damage = pp.p.ModifyDamage (damage, c, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				damage = pp.p.ModifyDamage (damage, c, pp.c, Owner.ENEMY);
+			}
+
+			//clamp and return
+			if (damage < 0)
+				damage = 0;
+
+			return damage;
+		}
+
+		/// <summary>
+		/// Calculates the attack type of a Character
+		/// </summary>
+		/// <returns>The modified attack type</returns>
+		/// <param name="x1">A column</param>
+		/// <param name="y1">A row</param>
+		private bool CalculateAttackType(int x1, int y1){
+			Character c = Owner.GAMEBOARD.Board[x1, y1];
+			bool melee = c.BaseIsMelee;
+			if (c == null)
+				return melee;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				melee = pp.p.ModifyAttackType (melee, c, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				melee = pp.p.ModifyAttackType (melee, c, pp.c, Owner.ENEMY);
+			}
+
+			return melee;
+		}
+
+		/// <summary>
+		/// Calculates the Intercept value of a Character
+		/// </summary>
+		/// <returns>The modified Intercept value</returns>
+		/// <param name="x1">A column</param>
+		/// <param name="y1">A row</param>
+		private bool CalculateIntercept(int x1, int y1){
+			Character c = Owner.GAMEBOARD.Board[x1, y1];
+			bool intercept = c.BaseIntercept;
+			if (c == null)
+				return intercept;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				intercept = pp.p.ModifyIntercept (intercept, c, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				intercept = pp.p.ModifyIntercept (intercept, c, pp.c, Owner.ENEMY);
+			}
+
+			return intercept;
+		}
+
+		/// <summary>
+		/// Calculates the life of a Character
+		/// </summary>
+		/// <returns>The modified life</returns>
+		/// <param name="x1">A column</param>
+		/// <param name="y1">A row</param>
+		private int CalculateLife(int x1, int y1){
+			Character c = Owner.GAMEBOARD.Board[x1, y1];
+			int life = c.BaseLife;
+			if (c == null)
+				return life;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				life = pp.p.ModifyLife (life, c, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				life = pp.p.ModifyLife (life, c, pp.c, Owner.ENEMY);
+			}
+
+			//clamp and return
+			if (life < 0)
+				life = 0;
+
+			return life;
+		}
+
+		/// <summary>
+		/// Calculates the Overkill value of a Character
+		/// </summary>
+		/// <returns>The modified Overkill value</returns>
+		/// <param name="x1">A column</param>
+		/// <param name="y1">A row</param>
+		private bool CalculateOverkill(int x1, int y1){
+			Character c = Owner.GAMEBOARD.Board[x1, y1];
+			bool overkill = false;
+			if (c == null)
+				return overkill;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				overkill = pp.p.ModifyOverkill (overkill, c, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				overkill = pp.p.ModifyOverkill (overkill, c, pp.c, Owner.ENEMY);
+			}
+
+			return overkill;
+		}
+
+		/// <summary>
+		/// Calculates if the Owner should reveal his Hand
+		/// </summary>
+		/// <returns>Whether or not the owner must reveal his Hand</returns>
+		private bool CalculateRevealHand(){
+			bool reveal = false;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				reveal = pp.p.RevealYourHand (reveal, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				reveal = pp.p.RevealEnemyHand (reveal, pp.c, Owner.ENEMY);
+			}
+
+			return reveal;
+		}
+
+		/// <summary>
+		/// Calculates the Rooted value of a Character
+		/// </summary>
+		/// <returns>The modified Rooted value</returns>
+		/// <param name="x1">A column</param>
+		/// <param name="y1">A row</param>
+		private bool CalculateRooted(int x1, int y1){
+			Character c = Owner.GAMEBOARD.Board[x1, y1];
+			bool intercept = false;
+			if (c == null)
+				return intercept;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				intercept = pp.p.ModifyRooted (intercept, c, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				intercept = pp.p.ModifyRooted (intercept, c, pp.c, Owner.ENEMY);
+			}
+
+			return intercept;
+		}
+
+		/// <summary>
+		/// Calculates the Zombie value of a Character
+		/// </summary>
+		/// <returns>The modified zmobie value</returns>
+		/// <param name="x1">A column</param>
+		/// <param name="y1">A row</param>
+		private bool CalculateZombie(int x1, int y1){
+			Character c = Owner.GAMEBOARD.Board[x1, y1];
+			bool zombie = c.BaseZombie;
+			if (c == null)
+				return zombie;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				zombie = pp.p.ModifyZombie (zombie, c, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				zombie = pp.p.ModifyZombie (zombie, c, pp.c, Owner.ENEMY);
+			}
+
+			return zombie;
+		}
+
+		/// <summary>
+		/// Finds an overkill target.
+		/// </summary>
+		/// <returns>The overkill target.</returns>
+		/// <param name="target">The target that just died</param>
 		private Character FindOverkillTarget(Character target){
 			Point P = LocateInBoard (target);
 			int x = P.x; int y = P.y + 1;
 			if (y == ROWS)
 				return null;
-			return BOARD [x, y];
+			return Board [x, y];
 		}
 
-		public bool Melee(int x1, int y1, int col){
-			Character attacker = BOARD [x1, y1];
-			Player ENEMY = OWNER.ENEMY;
-			if (attacker == null || attacker.Dead || attacker.Stunned)
-				return false;
-			Character target = ENEMY.GAMEBOARD.FindCharacterInMelee (col);
-
-			//Damage type
-			Damage.TYPE DT = Damage.TYPE.MELEE;
-			if (!attacker.IsMelee)
-				DT = Damage.TYPE.RANGE;
-
-			if (target != null) {
-				target.AddDamage (new Damage(DT, attacker.Attack, attacker));
-				//Overkill
-				for (int r = 0; r < 2; r++) {
-					if (attacker.Overkill && target.Damage >= target.Life) {
-						int overkilldamage = target.Damage - target.Life;
-						target = ENEMY.GAMEBOARD.FindOverkillTarget (target);
-						if (target != null) {
-							target.AddDamage (new Damage (DT, overkilldamage, attacker));
-						} else {
-							ENEMY.AddDamage (new Damage (DT, overkilldamage, attacker));
-						}
-					}
-				}
-			} else {
-				ENEMY.AddDamage (new Damage(DT, attacker.Attack, attacker));
-			}
-				
-			return true;
-		}
-
-		public bool IsLaneOpen(int attackcolumn){
-			bool open = true;
-			for(int i = 0; i < ROWS; i++){
-				open = (BOARD[attackcolumn, i] == null) && open;
-			}
-			return open;
-		}
-
-		public bool Recruit(int x1, int y1, int handslot, Player PLAYER){
-			Character c = PLAYER.HAND.Get (handslot);
-			if (c == null)
-				return false;
-
-			if (!ValidRecruit (c, x1, y1)) //Check for legal recruitment
-				return false;
-
-			Character c2 = BOARD [x1, y1];
-			if (c2 != null) {
-				if (c2.Dead) {
-					Command.Execute (new Command (
-						Command.TYPE.CLEARCORPSE,
-						new string[] { x1.ToString (), y1.ToString () },
-						PLAYER));
-				}
-			}
-			BOARD [x1, y1] = c;
-
-			PostRecruitEffects (c, x1, y1);
-
-			PLAYER.HAND.Discard (c, PLAYER.GRAVEYARD);
-			return true;
-		}
-
+		/// <summary>
+		/// Performs Post Recruitment effects
+		/// Handles Upgrade and Gravedigger
+		/// </summary>
+		/// <param name="c">A Character</param>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
 		private void PostRecruitEffects(Character c, int x, int y){
+			//If the Character is a Gravedigger
 			if (c.Gravedigger) {
 				int p = c.GravediggerPlus;
-				while (p > 0) {
+				while (p > 0) { //Siphon Corposes
 					Point P = RandomCorpse();
 					Command.Execute (new Command (
 						Command.TYPE.CLEARCORPSE,
 						new string[] { P.x.ToString (), P.y.ToString () },
-						OWNER));
+						Owner));
 					p--;
 				}
 			}
+			//If the Character is an Upgrade
 			if (c.Upgrade) {
 				int p = c.UpgradePlus;
-				while (p > 0) {
+				while (p > 0) { //Siphon Units
 					Point P = RandomUnit();
 					if (P.x == x && P.y == y)
 						continue;
 					//remove unit
-					OWNER.GRAVEYARD.AddCard(BOARD[P.x,P.y]);
-					BOARD [P.x, P.y] = null;
+					Owner.GRAVEYARD.AddCard(Board[P.x,P.y], 999, null);
+					Board [P.x, P.y] = null;
 					p--;
 				}
 			}
 		}
 
+		/// <summary>
+		/// Finds a Random Corpse
+		/// </summary>
+		/// <returns>A Random Corpse</returns>
 		private Point RandomCorpse(){
 			List<Point> corpses = new List<Point> ();
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
-					if (BOARD [a, i] != null && BOARD [a, i].Dead)
+					if (Board [a, i] != null && Board [a, i].Dead)
 						corpses.Add (new Point(a, i));
 				}
 			}
@@ -300,11 +830,15 @@ namespace Tactics_CoreGameEngine
 			return corpses [Utility.R.Next (corpses.Count)];
 		}
 
+		/// <summary>
+		/// Finds a Random Unit
+		/// </summary>
+		/// <returns>A Random Unit</returns>
 		private Point RandomUnit(){
 			List<Point> units = new List<Point> ();
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
-					if (BOARD [a, i] != null && !BOARD [a, i].Dead)
+					if (Board [a, i] != null && !Board [a, i].Dead)
 						units.Add (new Point(a, i));
 				}
 			}
@@ -313,102 +847,18 @@ namespace Tactics_CoreGameEngine
 			return units [Utility.R.Next (units.Count)];
 		}
 
-		public void CheckAllDead(){
-			for (int i = 0; i < ROWS; i++) {
-				for (int a = 0; a < COLUMNS; a++) {
-					if(BOARD[a,i] != null) BOARD [a, i].CheckDead ();
-				}
-			}
-		}
-
-		public bool ClearCorpse(Hand GRAVEYARD, int x1, int y1){
-			if (BOARD [x1, y1].Dead) {
-				GRAVEYARD.AddCard (BOARD [x1, y1]);
-				BOARD [x1, y1] = null;
-				return true;
-			} else
-				return false;
-		}
-
-		public List<PassivePair> GatherPassives(){
-			List<PassivePair> ret = new List<PassivePair> ();
-			for (int i = 0; i < ROWS; i++) {
-				for (int a = 0; a < COLUMNS; a++) {
-					Character uc1 = BOARD[a,i];
-					if (uc1 == null)
-						continue;
-					foreach(Passive p in uc1.Passives[i]){
-						ret.Add (new PassivePair (p, uc1));
-					}
-
-				}
-			}
-			ret.Sort((x,y) => x.p.Priority.CompareTo(y.p.Priority));
-			return ret;
-		}
-
-		public void ResetFlags(){
-			for (int i = 0; i < ROWS; i++) {
-				for (int a = 0; a < COLUMNS; a++) {
-					if (BOARD [a, i] != null) {
-						BOARD [a, i].Moved = false;
-					}
-				}
-			}
-		}
-
-		public void ResetStunned(){
-			for (int i = 0; i < ROWS; i++) {
-				for (int a = 0; a < COLUMNS; a++) {
-					if (BOARD [a, i] != null) {
-						BOARD [a, i].Stunned = false;
-					}
-				}
-			}
-		}
-
-		public bool Contains(Character c){
-			for (int i = 0; i < ROWS; i++) {
-				for (int a = 0; a < COLUMNS; a++) {
-					if (BOARD [a, i] == c)
-						return true;
-				}
-			}
-			return false;
-		}
-
-		public bool RowContains(Character c, int row){
-			for (int i = 0; i < ROWS; i++) {
-				if (BOARD [i, row] == c)
-					return true;
-			}
-			return false;
-		}
-
-		public Point LocateInBoard(Character c){
-			for (int i = 0; i < ROWS; i++) {
-				for (int a = 0; a < COLUMNS; a++) {
-					if (BOARD [a, i] == c)
-						return new Point (a, i);
-				}
-			}
-			return null;
-		}
-
-		public bool Full{
-			get{
-				for (int i = 0; i < ROWS; i++) {
-					for (int a = 0; a < COLUMNS; a++) {
-						if (BOARD [a, i] == null)
-							return false;
-					}
-				}
-				return true;
-			}
-		}
-
+		/// <summary>
+		/// Determines whether a recruitment is valid
+		/// Bases this on whether or not the Character is an Upgrade
+		/// or a Gravedigger, and what is on the GameBoard current
+		/// </summary>
+		/// <returns><c>true</c>, if recruit was valid, 
+		/// <c>false</c> otherwise.</returns>
+		/// <param name="c">A character</param>
+		/// <param name="x">The column to recruit to</param>
+		/// <param name="y">The row to recruit to</param>
 		private bool ValidRecruit(Character c, int x, int y){
-			Character c2 = BOARD [x, y];
+			Character c2 = Board [x, y];
 			if (c2 == null) { //Nothing in the slot
 				if (c.Upgrade || c.Gravedigger) //upgrade or graved
 					return false;
@@ -428,206 +878,6 @@ namespace Tactics_CoreGameEngine
 				}
 			}
 		}
-
-		private bool CalculateRevealHand(){
-			bool reveal = false;
-
-			List<PassivePair> AP = OWNER.GatherPassives ();
-			List<PassivePair> EP = OWNER.ENEMY.GatherPassives ();
-
-			foreach (PassivePair pp in AP) {
-				reveal = pp.p.RevealYourHand (reveal, pp.c, OWNER);
-			}
-			foreach (PassivePair pp in EP) {
-				reveal = pp.p.RevealEnemyHand (reveal, pp.c, OWNER.ENEMY);
-			}
-
-			return reveal;
-		}
-
-		private int CalculateDamage(int x1, int y1){
-			Character c = OWNER.GAMEBOARD.BOARD [x1, y1];
-			int damage = c.BaseAttack;
-			if (c == null)
-				return damage;
-
-			List<PassivePair> AP = OWNER.GatherPassives ();
-			List<PassivePair> EP = OWNER.ENEMY.GatherPassives ();
-
-			foreach (PassivePair pp in AP) {
-				damage = pp.p.ModifyDamage (damage, c, pp.c, OWNER);
-			}
-			foreach (PassivePair pp in EP) {
-				damage = pp.p.ModifyDamage (damage, c, pp.c, OWNER.ENEMY);
-			}
-
-			//clamp and return
-			if (damage < 0)
-				damage = 0;
-
-			return damage;
-		}
-
-		private int CalculateLife(int x1, int y1){
-			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
-			int life = c.BaseLife;
-			if (c == null)
-				return life;
-
-			List<PassivePair> AP = OWNER.GatherPassives ();
-			List<PassivePair> EP = OWNER.ENEMY.GatherPassives ();
-
-			foreach (PassivePair pp in AP) {
-				life = pp.p.ModifyLife (life, c, pp.c, OWNER);
-			}
-			foreach (PassivePair pp in EP) {
-				life = pp.p.ModifyLife (life, c, pp.c, OWNER.ENEMY);
-			}
-
-			//clamp and return
-			if (life < 0)
-				life = 0;
-
-			return life;
-		}
-
-		private bool CalculateAttackType(int x1, int y1){
-			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
-			bool melee = c.BaseIsMelee;
-			if (c == null)
-				return melee;
-
-			List<PassivePair> AP = OWNER.GatherPassives ();
-			List<PassivePair> EP = OWNER.ENEMY.GatherPassives ();
-
-			foreach (PassivePair pp in AP) {
-				melee = pp.p.ModifyAttackType (melee, c, pp.c, OWNER);
-			}
-			foreach (PassivePair pp in EP) {
-				melee = pp.p.ModifyAttackType (melee, c, pp.c, OWNER.ENEMY);
-			}
-
-			return melee;
-		}
-
-		private bool CalculateIntercept(int x1, int y1){
-			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
-			bool intercept = c.BaseIntercept;
-			if (c == null)
-				return intercept;
-
-			List<PassivePair> AP = OWNER.GatherPassives ();
-			List<PassivePair> EP = OWNER.ENEMY.GatherPassives ();
-
-			foreach (PassivePair pp in AP) {
-				intercept = pp.p.ModifyIntercept (intercept, c, pp.c, OWNER);
-			}
-			foreach (PassivePair pp in EP) {
-				intercept = pp.p.ModifyIntercept (intercept, c, pp.c, OWNER.ENEMY);
-			}
-
-			return intercept;
-		}
-
-		private bool CalculateRooted(int x1, int y1){
-			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
-			bool intercept = false;
-			if (c == null)
-				return intercept;
-
-			List<PassivePair> AP = OWNER.GatherPassives ();
-			List<PassivePair> EP = OWNER.ENEMY.GatherPassives ();
-
-			foreach (PassivePair pp in AP) {
-				intercept = pp.p.ModifyRooted (intercept, c, pp.c, OWNER);
-			}
-			foreach (PassivePair pp in EP) {
-				intercept = pp.p.ModifyRooted (intercept, c, pp.c, OWNER.ENEMY);
-			}
-
-			return intercept;
-		}
-
-		private bool CalculateOverkill(int x1, int y1){
-			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
-			bool overkill = false;
-			if (c == null)
-				return overkill;
-
-			List<PassivePair> AP = OWNER.GatherPassives ();
-			List<PassivePair> EP = OWNER.ENEMY.GatherPassives ();
-
-			foreach (PassivePair pp in AP) {
-				overkill = pp.p.ModifyOverkill (overkill, c, pp.c, OWNER);
-			}
-			foreach (PassivePair pp in EP) {
-				overkill = pp.p.ModifyOverkill (overkill, c, pp.c, OWNER.ENEMY);
-			}
-
-			return overkill;
-		}
-
-		private int CalculateArmor(int x1, int y1){
-			Character c = OWNER.GAMEBOARD.BOARD [x1, y1];
-			int armor = c.BaseArmor;
-			if (c == null)
-				return armor;
-
-			List<PassivePair> AP = OWNER.GatherPassives ();
-			List<PassivePair> EP = OWNER.ENEMY.GatherPassives ();
-
-			foreach (PassivePair pp in AP) {
-				armor = pp.p.ModifyArmor (armor, c, pp.c, OWNER);
-			}
-			foreach (PassivePair pp in EP) {
-				armor = pp.p.ModifyArmor (armor, c, pp.c, OWNER.ENEMY);
-			}
-
-			//clamp and return
-			if (armor < 0)
-				armor = 0;
-
-			return armor;
-		}
-
-		private bool CalculateZombie(int x1, int y1){
-			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
-			bool zombie = c.BaseZombie;
-			if (c == null)
-				return zombie;
-
-			List<PassivePair> AP = OWNER.GatherPassives ();
-			List<PassivePair> EP = OWNER.ENEMY.GatherPassives ();
-
-			foreach (PassivePair pp in AP) {
-				zombie = pp.p.ModifyZombie (zombie, c, pp.c, OWNER);
-			}
-			foreach (PassivePair pp in EP) {
-				zombie = pp.p.ModifyZombie (zombie, c, pp.c, OWNER.ENEMY);
-			}
-
-			return zombie;
-		}
-
-		public void CalculateUnitStats(){
-			OWNER.RevealHandEffect = CalculateRevealHand ();
-			for (int i = 0; i < ROWS; i++) {
-				for (int a = 0; a < COLUMNS; a++) {
-					if (BOARD [a, i] != null) {
-						BOARD [a, i].Attack = CalculateDamage (a, i);
-						BOARD [a, i].Life = CalculateLife (a, i);
-						BOARD [a, i].IsMelee = CalculateAttackType(a,i);
-						BOARD [a, i].Intercept = CalculateIntercept(a,i);
-						BOARD [a, i].Rooted = CalculateRooted(a,i);
-						BOARD [a, i].Overkill = CalculateOverkill(a,i);
-						BOARD [a, i].Armor = CalculateArmor(a,i);
-						BOARD [a, i].Zombie = CalculateZombie(a,i);
-					}
-				}
-			}
-		}
-
-
 
 	} // End GameBoard class
 

@@ -102,7 +102,7 @@ namespace Tactics_CoreGameEngine
 		public void ClearBoard(){
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
-					GAMEBOARD.BOARD [a, i] = null;
+					GAMEBOARD.Board [a, i] = null;
 				}
 			}
 		}
@@ -165,15 +165,15 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void AddDamage(Damage D){
-			this.Life -= D.VALUE;
-			TABLE.PIPELINE.Add (new TriggerPacket (Trigger.TYPE.PLAYERDAMAGE, this, D.SOURCE, D.SOURCE.CONTROLLER));
+			this.Life -= D.Value;
+			TABLE.PIPELINE.Add (new TriggerPacket (Trigger.TYPE.PLAYERDAMAGE, this, D.Source, D.Source.CONTROLLER));
 		}
 
 		public void HealDamage(Damage D){
-			this.Life += D.VALUE;
+			this.Life += D.Value;
 			if (this.Life > MAXLIFE)
 				this.Life = MAXLIFE;
-			TABLE.PIPELINE.Add (new TriggerPacket (Trigger.TYPE.PLAYERHEAL, this, D.SOURCE, D.SOURCE.CONTROLLER));
+			TABLE.PIPELINE.Add (new TriggerPacket (Trigger.TYPE.PLAYERHEAL, this, D.Source, D.Source.CONTROLLER));
 		}
 
 		public bool OnGoing(int handindex){
@@ -192,7 +192,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void PrintHand(bool hide){
-			foreach (Character c in HAND.GetHand()) {
+			foreach (Character c in HAND.Cards) {
 				if (!hide || RevealHandEffect)
 					Console.WriteLine (c);
 				else
@@ -217,7 +217,7 @@ namespace Tactics_CoreGameEngine
 		public bool DoesControlUnit(Character c){
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
-					if (GAMEBOARD.BOARD [a, i] == c)
+					if (GAMEBOARD.Board [a, i] == c)
 						return true;
 				}
 			}
@@ -256,7 +256,7 @@ namespace Tactics_CoreGameEngine
 					og.Decrement ();
 					if (og.Expired) {
 						og.Discard (this);
-						GRAVEYARD.AddCard (TRAPS [i]);
+						GRAVEYARD.AddCard (TRAPS [i], 999, null);
 						TRAPS [i] = null;
 					}
 				}

@@ -58,7 +58,7 @@ namespace Tactics_CoreGameEngine
 			Dictionary<string, string> LOOKUP = GetDictionary (LanguageCode);
 
 			for (int j = 0; j < 2; j++) {
-				foreach (Character c in P.DECK.Contents()) {
+				foreach (Character c in P.DECK.Contents) {
 					if (!MASTER.ContainsKey (c.NameCode))
 						MASTER.Add (c.NameCode, LOOKUP [c.NameCode]);
 					for (int i = 0; i < TableTop.ROWS; i++) {

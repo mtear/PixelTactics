@@ -27,23 +27,54 @@ using System;
 
 namespace Tactics_CoreGameEngine
 {
+	/// <summary>
+	/// A class representing a Damage packet
+	/// </summary>
 	public class Damage
 	{
 
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// An enum representing the types of Damage that can be applied
+		/// </summary>
 		public enum TYPE{
 			MELEE, RANGE, SPELL, HEAL, STUN
 		}
 
-		public TYPE type;
-		public Character SOURCE;
-		public int VALUE;
+		//----------------------------------------------------------------
 
-		public Damage (Damage.TYPE type, int VALUE, Character SOURCE)
+		/// <summary>
+		/// The Character that is the source of the Damage
+		/// </summary>
+		public Character Source;
+
+		/// <summary>
+		/// The Type of Damage this packet is delivering
+		/// </summary>
+		public TYPE Type;
+
+		/// <summary>
+		/// The Value of the Damage
+		/// </summary>
+		public int Value;
+
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// Initializes a new instance of the 
+		/// <see cref="Tactics_CoreGameEngine.Damage"/> class.
+		/// </summary>
+		/// <param name="Type">Type.</param>
+		/// <param name="Value">Value.</param>
+		/// <param name="Source">Source.</param>
+		public Damage (Damage.TYPE Type, int Value, Character Source)
 		{
-			this.type = type;
-			this.VALUE = VALUE;
-			this.SOURCE = SOURCE;
+			this.Type = Type;
+			this.Value = Value;
+			this.Source = Source;
 		}
+
 	} // End Damage class
 
 } // End namespace

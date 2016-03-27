@@ -31,7 +31,7 @@ namespace Tactics_CoreGameEngine
 /**********************************************************************************
 **********************************************************************************
 * 
-* 										NOTE
+* 					NOTE
 * 
 * 		THIS FILE IS A COLLECTION OF ACTIVE ABILITIES FOR CHARACTER HAND EFFECTS
 * 
@@ -55,8 +55,8 @@ namespace Tactics_CoreGameEngine
 		public override void Execute(Character target, Player PLAYER){
 			for (int i = 0; i < 3; i++) {
 				for (int a = 0; a < 3; a++) {
-					if(PLAYER.ENEMY.GAMEBOARD.BOARD[a,i] != null)
-						PLAYER.ENEMY.GAMEBOARD.BOARD [a, i].AddDamage (new Damage(Damage.TYPE.SPELL, 1, null));
+					if(PLAYER.ENEMY.GAMEBOARD.Board[a,i] != null)
+						PLAYER.ENEMY.GAMEBOARD.Board [a, i].AddDamage (new Damage(Damage.TYPE.SPELL, 1, null));
 				}
 			}
 		}
@@ -66,8 +66,8 @@ namespace Tactics_CoreGameEngine
 		public TestActive2 () : base ("TA2", ""){}
 
 		public override void Execute(Character target, Player PLAYER){
-			PLAYER.ENEMY.HAND.DiscardRandom (PLAYER.ENEMY.GRAVEYARD);
-			PLAYER.ENEMY.HAND.DiscardRandom (PLAYER.ENEMY.GRAVEYARD);
+			PLAYER.ENEMY.HAND.DiscardRandomCard (PLAYER.ENEMY.GRAVEYARD);
+			PLAYER.ENEMY.HAND.DiscardRandomCard (PLAYER.ENEMY.GRAVEYARD);
 		}
 	}
 

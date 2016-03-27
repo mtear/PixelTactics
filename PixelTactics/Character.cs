@@ -409,14 +409,14 @@ namespace Tactics_CoreGameEngine
 		/// <param name="D">The Damage object</param>
 		public void AddDamage(Damage D){
 			//Return if this Character is immune to the Damage Type
-			if (IMMUNITIES.Contains (D.type))
+			if (IMMUNITIES.Contains (D.Type))
 				return;
 
 			//Get the amount of Damage
-			int DV = D.VALUE - Armor;
+			int DV = D.Value - Armor;
 
 			//Armor doesn't stop spell damage
-			if (D.type == Tactics_CoreGameEngine.Damage.TYPE.SPELL) DV = D.VALUE;
+			if (D.Type == Tactics_CoreGameEngine.Damage.TYPE.SPELL) DV = D.Value;
 
 			//Cap the damage value at 0
 			if (DV < 0)
@@ -429,7 +429,7 @@ namespace Tactics_CoreGameEngine
 			if(DV > 0)
 				CONTROLLER.TABLE.PIPELINE.Add (new TriggerPacket
 					(Trigger.TYPE.UNITDAMAGE, CONTROLLER,
-						D.SOURCE, null, this));
+						D.Source, null, this));
 		}
 
 		/// <summary>
@@ -520,21 +520,21 @@ namespace Tactics_CoreGameEngine
 		public void HealDamage(Damage D){
 			//If Zombified, reverse the healing effect
 			if (Zombie)
-				D.VALUE = Math.Abs(D.VALUE) * -1;
+				D.Value = Math.Abs(D.Value) * -1;
 
 			//If Immune to healing, return
-			if (IMMUNITIES.Contains (D.type))
+			if (IMMUNITIES.Contains (D.Type))
 				return;
 
 			//Remove damage equal to the healing amount
-			damage -= D.VALUE;
+			damage -= D.Value;
 			//If less than 0 damage, clamp it
 			if (damage < 0)
 				damage = 0;
 
 			//Add a Unit Heal trigger to the pipeline
 			CONTROLLER.TABLE.PIPELINE.Add (new TriggerPacket (
-				Trigger.TYPE.UNITHEAL,CONTROLLER, D.SOURCE,
+				Trigger.TYPE.UNITHEAL,CONTROLLER, D.Source,
 				null, this));
 		}
 

@@ -25,7 +25,7 @@
 
 using System;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 
 /**********************************************************************************
@@ -55,8 +55,8 @@ namespace PixelTactics
 		public override void Execute(Character target, Player PLAYER){
 			for (int i = 0; i < 3; i++) {
 				for (int a = 0; a < 3; a++) {
-					if(PLAYER.ENEMY.BOARD.BOARD[a,i] != null)
-						PLAYER.ENEMY.BOARD.BOARD [a, i].AddDamage (new Damage(Damage.TYPE.SPELL, 1, null));
+					if(PLAYER.ENEMY.GAMEBOARD.BOARD[a,i] != null)
+						PLAYER.ENEMY.GAMEBOARD.BOARD [a, i].AddDamage (new Damage(Damage.TYPE.SPELL, 1, null));
 				}
 			}
 		}

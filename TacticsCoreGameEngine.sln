@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixelTactics2", "PixelTactics\PixelTactics2.csproj", "{0153515E-38B8-4EC0-B4FA-20C78E33463E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tactics_CoreGameEngine", "PixelTactics\Tactics_CoreGameEngine.csproj", "{0153515E-38B8-4EC0-B4FA-20C78E33463E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F7420594-79B9-4A2C-9587-4867237004E7}"
 EndProject

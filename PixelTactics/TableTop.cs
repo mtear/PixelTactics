@@ -1,7 +1,32 @@
-﻿using System;
+﻿/*************************************************************************
+ * 
+ * FELICITY CONFIDENTIAL
+ * __________________
+ * 
+ *  [2016] - [2016] Felicity Entertainment
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Felicity Entertainment and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Felicity Entertainment and its 
+ * suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or 
+ * copyright law. Dissemination of this information or reproduction
+ * of this material is strictly forbidden unless prior written
+ * permission is obtained from Felicity Entertainment.
+ */
+
+/*
+* TableTop.cs
+* Author: Nic Wilson
+* Last updated: 3/27/2016
+*/
+
+using System;
 using System.Collections.Generic;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 	public class TableTop
 	{
@@ -86,12 +111,12 @@ namespace PixelTactics
 		public void Print(Player P){
 			Console.Clear ();
 			P.ENEMY.PrintTraps ();
-			P.ENEMY.BOARD.PrintBoard (true);
-			P.ENEMY.BOARD.PrintUnits ();
+			P.ENEMY.GAMEBOARD.PrintBoard (true);
+			P.ENEMY.GAMEBOARD.PrintUnits ();
 			Console.WriteLine ("---------------");
-			P.BOARD.PrintBoard (false);
+			P.GAMEBOARD.PrintBoard (false);
 			P.PrintTraps ();
-			P.BOARD.PrintUnits ();
+			P.GAMEBOARD.PrintUnits ();
 			Console.WriteLine ();
 
 			Console.WriteLine (P.Name + "(" + P.Life + ") HAND:");
@@ -106,8 +131,8 @@ namespace PixelTactics
 			if (!VALID)
 				return;
 
-			P.BOARD.CheckAllDead ();
-			P.ENEMY.BOARD.CheckAllDead ();
+			P.GAMEBOARD.CheckAllDead ();
+			P.ENEMY.GAMEBOARD.CheckAllDead ();
 			CalculateUnitStats (P);
 			CalculateUnitStats (P.ENEMY);
 			PopTrigger (P);
@@ -175,28 +200,28 @@ namespace PixelTactics
 
 		public void FullAttack(Player P){
 			for (int a = 0; a < COLUMNS; a++) {
-				if (P.BOARD.BOARD [a,0] != null) {
-					P.BOARD.Melee (a, 0, a);
+				if (P.GAMEBOARD.BOARD [a,0] != null) {
+					P.GAMEBOARD.Melee (a, 0, a);
 				}
-				if (P.ENEMY.BOARD.BOARD [a,0] != null) {
-					P.ENEMY.BOARD.Melee (a, 0, a);
+				if (P.ENEMY.GAMEBOARD.BOARD [a,0] != null) {
+					P.ENEMY.GAMEBOARD.Melee (a, 0, a);
 				}
 			}
 			//Ranged
 			for (int a = 0; a < COLUMNS; a++) {
-				if (P.BOARD.BOARD [a,1] != null
-					&& !P.BOARD.BOARD [a,1].IsMelee) {
-					P.BOARD.Melee (a, 1, a);
+				if (P.GAMEBOARD.BOARD [a,1] != null
+					&& !P.GAMEBOARD.BOARD [a,1].IsMelee) {
+					P.GAMEBOARD.Melee (a, 1, a);
 				}
-				if (P.ENEMY.BOARD.BOARD [a,1] != null
-					&& !P.ENEMY.BOARD.BOARD [a,1].IsMelee) {
-					P.ENEMY.BOARD.Melee (a, 1, a);
+				if (P.ENEMY.GAMEBOARD.BOARD [a,1] != null
+					&& !P.ENEMY.GAMEBOARD.BOARD [a,1].IsMelee) {
+					P.ENEMY.GAMEBOARD.Melee (a, 1, a);
 				}
 			}
 		}
 
 		public void CalculateUnitStats(Player P){
-			P.BOARD.CalculateUnitStats ();
+			P.GAMEBOARD.CalculateUnitStats ();
 		}
 
 		public void BroadcastEvent(TriggerPacket TP, List<TriggerPair> EFFECTPIPELINE){
@@ -211,7 +236,7 @@ namespace PixelTactics
 				for (int a = 0; a < COLUMNS; a++) {
 					Player A = TP.PLAYER;
 					for(int j = 0; j < 2; j++){ //Go twice for both players
-						Character c = A.BOARD.BOARD [a, i];
+						Character c = A.GAMEBOARD.BOARD [a, i];
 						if (c == null) {
 							A = TP.PLAYER.ENEMY;
 							continue;
@@ -286,6 +311,7 @@ namespace PixelTactics
 			return countered;
 		}
 
-	}
-}
+	} // End TableTop
+
+} // End namespace
 

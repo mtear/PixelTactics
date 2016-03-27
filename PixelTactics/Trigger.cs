@@ -1,7 +1,32 @@
-﻿using System;
+﻿/*************************************************************************
+ * 
+ * FELICITY CONFIDENTIAL
+ * __________________
+ * 
+ *  [2016] - [2016] Felicity Entertainment
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Felicity Entertainment and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Felicity Entertainment and its 
+ * suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or 
+ * copyright law. Dissemination of this information or reproduction
+ * of this material is strictly forbidden unless prior written
+ * permission is obtained from Felicity Entertainment.
+ */
+
+/*
+* Trigger.cs
+* Author: Nic Wilson
+* Last updated: 3/27/2016
+*/
+
+using System;
 using System.Collections.Generic;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 	public abstract class Trigger : Ability
 	{
@@ -46,7 +71,7 @@ namespace PixelTactics
 		}
 		protected abstract void mExecute(TriggerPacket TP);
 
-	}
+	} // End Trigger class
 
 	public class TriggerPacket{
 		public Trigger.TYPE TYPE;
@@ -71,7 +96,7 @@ namespace PixelTactics
 			this.TARGET = TARGET;
 			this.INITIATOR = INITIATOR;
 		}
-	}
+	} // End TriggerPacket class
 
 	public class TriggerPair{
 		public TriggerPacket TP;
@@ -81,7 +106,7 @@ namespace PixelTactics
 			this.TP = TP;
 			this.TRIGGER = TRIGGER;
 		}
-	}
+	} // End TriggerPair
 		
-}
+} // End namespace
 

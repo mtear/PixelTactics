@@ -25,7 +25,7 @@
 
 using System;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 
 /**********************************************************************************

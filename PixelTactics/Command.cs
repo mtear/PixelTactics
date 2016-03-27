@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 
 	/// <summary>
@@ -206,14 +206,14 @@ namespace PixelTactics
 				//Check if the move is valid first
 				//Then make the move if it is a valid move
 				case TYPE.MOVE:
-					ETP.Successful= c.PLAYER.BOARD.ValidMove (
+					ETP.Successful= c.PLAYER.GAMEBOARD.ValidMove (
 						int.Parse (c.Parameters [0]),
 						int.Parse (c.Parameters [1]),
 						int.Parse (c.Parameters [2]),
 						int.Parse (c.Parameters [3]), false);
 					if(ETP.Successful){
 						c.PLAYER.TABLE.SettleState(c.PLAYER);
-						ETP.Successful= c.PLAYER.BOARD.Move (
+						ETP.Successful= c.PLAYER.GAMEBOARD.Move (
 							int.Parse (c.Parameters [0]),
 							int.Parse (c.Parameters [1]),
 							int.Parse (c.Parameters [2]),
@@ -230,7 +230,7 @@ namespace PixelTactics
 					break;
 				//Perform a melee attack
 				case TYPE.MELEE:
-					ETP.Successful= c.PLAYER.BOARD.Melee(
+					ETP.Successful= c.PLAYER.GAMEBOARD.Melee(
 						int.Parse(c.Parameters[0]),
 						int.Parse(c.Parameters[1]),
 						int.Parse(c.Parameters[2]));
@@ -239,7 +239,7 @@ namespace PixelTactics
 				case TYPE.RECRUIT:
 					ETP.TP.TARGET = c.PLAYER.HAND.Get(
 						int.Parse(c.Parameters[2]));
-					ETP.Successful = c.PLAYER.BOARD.Recruit(
+					ETP.Successful = c.PLAYER.GAMEBOARD.Recruit(
 						int.Parse(c.Parameters[0]),
 						int.Parse(c.Parameters[1]),
 						int.Parse(c.Parameters[2]),
@@ -251,10 +251,10 @@ namespace PixelTactics
 					break;
 				//Clear a corpse from the playing field
 				case TYPE.CLEARCORPSE:
-					ETP.TP.TARGET = c.PLAYER.BOARD.BOARD[
+					ETP.TP.TARGET = c.PLAYER.GAMEBOARD.BOARD[
 							int.Parse(c.Parameters[0]),
 							int.Parse(c.Parameters[1])];
-					ETP.Successful = c.PLAYER.BOARD.ClearCorpse(
+					ETP.Successful = c.PLAYER.GAMEBOARD.ClearCorpse(
 						c.PLAYER.GRAVEYARD,
 						int.Parse(c.Parameters[0]),
 						int.Parse(c.Parameters[1]));

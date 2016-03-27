@@ -48,7 +48,6 @@
     <Compile Include="ActiveAbilities.cs" />
     <Compile Include="Trigger.cs" />
     <Compile Include="TriggerAbilities.cs" />
-    <Compile Include="TriggerInfo.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="TableTop.cs" />
     <Compile Include="OnGoing.cs" />
@@ -61,7 +60,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="TODO.txt" />
-    <None Include="IDEAS.txt" />
+    <None Include="_TODO.txt" />
+    <None Include="_IDEAS.txt" />
   </ItemGroup>
 </Project>

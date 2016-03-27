@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 	/// <summary>
 	/// An Active ability that can be a Hand ability

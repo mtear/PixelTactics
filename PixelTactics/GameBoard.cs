@@ -1,7 +1,32 @@
-﻿using System;
+﻿/*************************************************************************
+ * 
+ * FELICITY CONFIDENTIAL
+ * __________________
+ * 
+ *  [2016] - [2016] Felicity Entertainment
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Felicity Entertainment and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Felicity Entertainment and its 
+ * suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or 
+ * copyright law. Dissemination of this information or reproduction
+ * of this material is strictly forbidden unless prior written
+ * permission is obtained from Felicity Entertainment.
+ */
+
+/*
+* GameBoard.cs
+* Author: Nic Wilson
+* Last updated: 3/27/2016
+*/
+
+using System;
 using System.Collections.Generic;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 	public class GameBoard
 	{
@@ -175,7 +200,7 @@ namespace PixelTactics
 			Player ENEMY = OWNER.ENEMY;
 			if (attacker == null || attacker.Dead || attacker.Stunned)
 				return false;
-			Character target = ENEMY.BOARD.FindCharacterInMelee (col);
+			Character target = ENEMY.GAMEBOARD.FindCharacterInMelee (col);
 
 			//Damage type
 			Damage.TYPE DT = Damage.TYPE.MELEE;
@@ -188,7 +213,7 @@ namespace PixelTactics
 				for (int r = 0; r < 2; r++) {
 					if (attacker.Overkill && target.Damage >= target.Life) {
 						int overkilldamage = target.Damage - target.Life;
-						target = ENEMY.BOARD.FindOverkillTarget (target);
+						target = ENEMY.GAMEBOARD.FindOverkillTarget (target);
 						if (target != null) {
 							target.AddDamage (new Damage (DT, overkilldamage, attacker));
 						} else {
@@ -421,7 +446,7 @@ namespace PixelTactics
 		}
 
 		private int CalculateDamage(int x1, int y1){
-			Character c = OWNER.BOARD.BOARD [x1, y1];
+			Character c = OWNER.GAMEBOARD.BOARD [x1, y1];
 			int damage = c.BaseAttack;
 			if (c == null)
 				return damage;
@@ -444,7 +469,7 @@ namespace PixelTactics
 		}
 
 		private int CalculateLife(int x1, int y1){
-			Character c = OWNER.BOARD.BOARD[x1, y1];
+			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
 			int life = c.BaseLife;
 			if (c == null)
 				return life;
@@ -467,7 +492,7 @@ namespace PixelTactics
 		}
 
 		private bool CalculateAttackType(int x1, int y1){
-			Character c = OWNER.BOARD.BOARD[x1, y1];
+			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
 			bool melee = c.BaseIsMelee;
 			if (c == null)
 				return melee;
@@ -486,7 +511,7 @@ namespace PixelTactics
 		}
 
 		private bool CalculateIntercept(int x1, int y1){
-			Character c = OWNER.BOARD.BOARD[x1, y1];
+			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
 			bool intercept = c.BaseIntercept;
 			if (c == null)
 				return intercept;
@@ -505,7 +530,7 @@ namespace PixelTactics
 		}
 
 		private bool CalculateRooted(int x1, int y1){
-			Character c = OWNER.BOARD.BOARD[x1, y1];
+			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
 			bool intercept = false;
 			if (c == null)
 				return intercept;
@@ -524,7 +549,7 @@ namespace PixelTactics
 		}
 
 		private bool CalculateOverkill(int x1, int y1){
-			Character c = OWNER.BOARD.BOARD[x1, y1];
+			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
 			bool overkill = false;
 			if (c == null)
 				return overkill;
@@ -543,7 +568,7 @@ namespace PixelTactics
 		}
 
 		private int CalculateArmor(int x1, int y1){
-			Character c = OWNER.BOARD.BOARD [x1, y1];
+			Character c = OWNER.GAMEBOARD.BOARD [x1, y1];
 			int armor = c.BaseArmor;
 			if (c == null)
 				return armor;
@@ -566,7 +591,7 @@ namespace PixelTactics
 		}
 
 		private bool CalculateZombie(int x1, int y1){
-			Character c = OWNER.BOARD.BOARD[x1, y1];
+			Character c = OWNER.GAMEBOARD.BOARD[x1, y1];
 			bool zombie = c.BaseZombie;
 			if (c == null)
 				return zombie;
@@ -604,6 +629,7 @@ namespace PixelTactics
 
 
 
-	}
-}
+	} // End GameBoard class
+
+} // End namespace
 

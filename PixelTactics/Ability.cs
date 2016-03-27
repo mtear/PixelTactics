@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 	/// <summary>
 	/// A class representing a character Ability

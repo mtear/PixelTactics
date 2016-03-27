@@ -1,12 +1,37 @@
-﻿using System;
+﻿/*************************************************************************
+ * 
+ * FELICITY CONFIDENTIAL
+ * __________________
+ * 
+ *  [2016] - [2016] Felicity Entertainment
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Felicity Entertainment and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Felicity Entertainment and its 
+ * suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or 
+ * copyright law. Dissemination of this information or reproduction
+ * of this material is strictly forbidden unless prior written
+ * permission is obtained from Felicity Entertainment.
+ */
+
+/*
+* Player.cs
+* Author: Nic Wilson
+* Last updated: 3/27/2016
+*/
+
+using System;
 using System.Collections.Generic;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 	public class Player
 	{
 		public String Name;
-		public GameBoard BOARD;
+		public GameBoard GAMEBOARD;
 		public Character[] TRAPS;
 		public Hand HAND;
 		public Hand GRAVEYARD;
@@ -38,7 +63,7 @@ namespace PixelTactics
 		{
 			this.Name = Name;
 			this.ROWS = ROWS; this.COLUMNS = COLUMNS;
-			this.BOARD = new GameBoard (COLUMNS, ROWS, this);
+			this.GAMEBOARD = new GameBoard (COLUMNS, ROWS, this);
 			this.TRAPS = new Character[3];
 			this.Life = MAXLIFE;
 			this.MAXLIFE = MAXLIFE;
@@ -77,7 +102,7 @@ namespace PixelTactics
 		public void ClearBoard(){
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
-					BOARD.BOARD [a, i] = null;
+					GAMEBOARD.BOARD [a, i] = null;
 				}
 			}
 		}
@@ -192,7 +217,7 @@ namespace PixelTactics
 		public bool DoesControlUnit(Character c){
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
-					if (BOARD.BOARD [a, i] == c)
+					if (GAMEBOARD.BOARD [a, i] == c)
 						return true;
 				}
 			}
@@ -214,7 +239,7 @@ namespace PixelTactics
 				}
 			}
 			//Board passives
-			ret.AddRange(BOARD.GatherPassives());
+			ret.AddRange(GAMEBOARD.GatherPassives());
 			ret.Sort((x,y) => x.p.Priority.CompareTo(y.p.Priority));
 			return ret;
 		}
@@ -238,14 +263,15 @@ namespace PixelTactics
 			}
 			TABLE.SettleState (this);
 
-			BOARD.ResetFlags ();
-			BOARD.ResetStunned ();
+			GAMEBOARD.ResetFlags ();
+			GAMEBOARD.ResetStunned ();
 		}
 
 		public void StartTurn(){
-			BOARD.ResetFlags ();
+			GAMEBOARD.ResetFlags ();
 		}
 
-	}
-}
+	} // End Player class
+
+} // End namespace
 

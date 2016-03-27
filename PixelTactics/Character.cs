@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PixelTactics
+namespace Tactics_CoreGameEngine
 {
 	/// <summary>
 	/// An object representing a game Character
@@ -277,7 +277,7 @@ namespace PixelTactics
 			}
 			set{
 				//Become stunned if not immune to stun
-				if (!IMMUNITIES.Contains (PixelTactics.Damage.TYPE.STUN))
+				if (!IMMUNITIES.Contains (Tactics_CoreGameEngine.Damage.TYPE.STUN))
 					stunned = value;
 			}
 		}
@@ -349,7 +349,7 @@ namespace PixelTactics
 			overkill = false, m_overkill = false, zombie = false,
 			m_zombie = false, isdead = false;
 
-		private List<Damage.TYPE> IMMUNITIES = new List<PixelTactics.Damage.TYPE> ();
+		private List<Damage.TYPE> IMMUNITIES = new List<Tactics_CoreGameEngine.Damage.TYPE> ();
 
 		private List<String> types, _types;
 
@@ -416,7 +416,7 @@ namespace PixelTactics
 			int DV = D.VALUE - Armor;
 
 			//Armor doesn't stop spell damage
-			if (D.type == PixelTactics.Damage.TYPE.SPELL) DV = D.VALUE;
+			if (D.type == Tactics_CoreGameEngine.Damage.TYPE.SPELL) DV = D.VALUE;
 
 			//Cap the damage value at 0
 			if (DV < 0)

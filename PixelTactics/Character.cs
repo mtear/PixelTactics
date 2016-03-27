@@ -493,6 +493,27 @@ namespace Tactics_CoreGameEngine
 		}
 
 		/// <summary>
+		/// Copy this Character with a new Controller
+		/// </summary>
+		/// <param name="P">The new controller Player</param>
+		public Character Copy(Player P){
+			//Make a copy of the Types list
+			List<string> ntypes = new List<string> ();
+			foreach (string t in _types)
+				ntypes.Add (t);
+			
+			//Create a copy of this Character
+			Character c = new Character (
+			              P,
+			              this.name,
+			              this._attack,
+			              this._maxhealth,
+				      ntypes.ToArray());
+			//Return the copy
+			return c;
+		}
+
+		/// <summary>
 		/// Heals the for the specified amount
 		/// </summary>
 		/// <param name="D">The Damage object to heal with</param>

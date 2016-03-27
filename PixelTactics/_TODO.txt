@@ -4,5 +4,3 @@ Comment things
 untargetable creatures/Players
 Card Copy with new player function
 Fusion
-Players and decks created before passing in to table/player
-Table needs references to the players

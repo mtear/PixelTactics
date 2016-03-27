@@ -24,6 +24,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace Tactics_CoreGameEngine
 {
@@ -31,6 +32,22 @@ namespace Tactics_CoreGameEngine
 	{
 
 		public static Random R = new Random();
+
+		public static List<Character> GetDebugStarterDeck(Player P){
+			List<Character> deck = new List<Character> ();
+			deck.Add (new UC1 (P));
+			deck.Add (new UC1 (P));
+			deck.Add (new UC1 (P));
+			deck.Add (new UC1 (P));
+			deck.Add (new UC2 (P));
+			deck.Add (new UC2 (P));
+			deck.Add (new UC2 (P));
+			deck.Add (new UC3 (P));
+			deck.Add (new UC3 (P));
+			deck.Add (new UC3 (P));
+			return deck;
+		}
+
 
 	} // End Utility class
 

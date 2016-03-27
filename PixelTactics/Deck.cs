@@ -39,29 +39,14 @@ namespace Tactics_CoreGameEngine
 			}
 		}
 
-		public Deck (Player P)
+		public Deck (List<Character> deck)
 		{
-			deck = new List<Character> ();
-			Setup (P);
+			this.deck = deck;
+			Shuffle ();
 		}
 
 		public List<Character> Contents(){
 			return deck;
-		}
-
-		public void Setup(Player P){
-			deck.Add(new UC1(P));
-			deck.Add(new UC1(P));
-			deck.Add(new UC1(P));
-			deck.Add(new UC3(P));
-			deck.Add(new UC3(P));
-			deck.Add(new UC2(P));
-			deck.Add(new UC2(P));
-			deck.Add(new UC2(P));
-			deck.Add(new UC2(P));
-			deck.Add(new UC3(P));
-			deck.Add(new UC3(P));
-			Shuffle ();
 		}
 
 		public Character Draw(){

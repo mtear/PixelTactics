@@ -46,8 +46,6 @@ namespace Tactics_CoreGameEngine
 
 		public TableTop TABLE;
 
-		//public static List<TriggerPacket> PIPELINE = new List<TriggerPacket>();
-
 		private int BaseMaxHandSize = 5;
 		private int HandSizeModifier = 0;
 		public int MaxHandSize {
@@ -59,7 +57,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public Player (string Name, int ROWS, int COLUMNS, int MAXLIFE,
-			Player ENEMY, TableTop TABLE, CommandInterface COMMANDINTERFACE)
+			Player ENEMY, CommandInterface COMMANDINTERFACE)
 		{
 			this.Name = Name;
 			this.ROWS = ROWS; this.COLUMNS = COLUMNS;
@@ -68,15 +66,17 @@ namespace Tactics_CoreGameEngine
 			this.Life = MAXLIFE;
 			this.MAXLIFE = MAXLIFE;
 			this.HAND = new Hand ();
-			this.DECK = new Deck (this);
 			this.GRAVEYARD = new Hand ();
 			this.ENEMY = ENEMY;
-			this.TABLE = TABLE;
 			COMMANDINTERFACE.P = this;
 			this.COMMANDINTERFACE = COMMANDINTERFACE;
+		}
 
-			if (ENEMY == null)
-				return;
+		public void LoadDeck(Deck DECK){
+			this.DECK = DECK;
+		}
+
+		public void DrawHand(){
 			for (int i = 0; i < 4; i++) {
 				DrawCard ();
 			}

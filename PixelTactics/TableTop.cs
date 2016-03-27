@@ -40,17 +40,23 @@ namespace Tactics_CoreGameEngine
 		public List<TriggerPair> EFFECTPIPELINE = new List<TriggerPair>();
 
 		public Player WINNER = null;
+		public Player P1;
+		public Player P2;
 
 		public StringTable STRINGTABLE;
 
-		public TableTop (String LCODE)
+		public TableTop (String LCODE, Player P1, Player P2)
 		{
-			Player P1 = new Player ("P1", ROWS, COLUMNS, MAXLIFE, null, this, new CommandInterface());
-			Player P2 = new Player ("P2", ROWS, COLUMNS, MAXLIFE, P1, this, new CommandInterface());
-			P1.SetEnemy (P2);
+			P1.TABLE = this;
+			P2.TABLE = this;
+			this.P1 = P1;
+			this.P2 = P2;
 
 			//Setup string table
 			STRINGTABLE = new StringTable(LCODE, P1);
+
+			P1.DrawHand ();
+			P2.DrawHand ();
 
 			Play (P1);
 		}

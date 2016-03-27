@@ -185,11 +185,11 @@ namespace PixelTactics
 			//Ranged
 			for (int a = 0; a < COLUMNS; a++) {
 				if (P.BOARD.BOARD [a,1] != null
-					&& !P.BOARD.BOARD [a,1].Melee) {
+					&& !P.BOARD.BOARD [a,1].IsMelee) {
 					P.BOARD.Melee (a, 1, a);
 				}
 				if (P.ENEMY.BOARD.BOARD [a,1] != null
-					&& !P.ENEMY.BOARD.BOARD [a,1].Melee) {
+					&& !P.ENEMY.BOARD.BOARD [a,1].IsMelee) {
 					P.ENEMY.BOARD.Melee (a, 1, a);
 				}
 			}
@@ -217,7 +217,7 @@ namespace PixelTactics
 							continue;
 						}
 
-						foreach (Trigger trig in c.triggers[i]) {
+						foreach (Trigger trig in c.Triggers[i]) {
 							TP.USER = c;
 							trig.CheckAndExecute (TP, EFFECTPIPELINE);
 						}
@@ -248,18 +248,18 @@ namespace PixelTactics
 				for (int i = 0; i < traps.Length; i++) {
 					if (traps [i] == null)
 						continue;
-					if (!traps [i].CanTrap)
+					if (!traps [i].TrapArmed)
 						continue;
-					if (traps [i].order.GetType ().IsSubclassOf (typeof(Trigger))) {
+					if (traps [i].HandAbility.GetType ().IsSubclassOf (typeof(Trigger))) {
 						//Get the trap
-						Trigger t = (Trigger)traps [i].order;
+						Trigger t = (Trigger)traps [i].HandAbility;
 						TP.USER = traps [i];
 						bool activated = t.Check (TP);
 						//Activate trap
 						if (activated) {
 							TriggerPacket TRAPPACKET = new TriggerPacket (Trigger.TYPE.TRAPACTIVATE,
 								traps[i].CONTROLLER, traps[i], traps[i].CONTROLLER);
-							TRAPPACKET.TRIGGERTARGET = (Trigger)traps[i].order;
+							TRAPPACKET.TRIGGERTARGET = (Trigger)traps[i].HandAbility;
 							TRAPPACKET.TPTARGET = TP;
 							if (TRAPPACKET.TRIGGERTARGET.COUNTER) {
 								PIPELINE.Insert (0, TRAPPACKET);
@@ -271,9 +271,9 @@ namespace PixelTactics
 							P.GRAVEYARD.AddCard (traps [i]);
 							traps [i] = null;
 						}
-					} else if (traps [i].order.GetType ().IsSubclassOf (typeof(OnGoing))) {
+					} else if (traps [i].HandAbility.GetType ().IsSubclassOf (typeof(OnGoing))) {
 						//Get the ongoing
-						OnGoing og = (OnGoing)traps [i].order;
+						OnGoing og = (OnGoing)traps [i].HandAbility;
 						foreach (Trigger t in og.Triggers) {
 							TP.USER = traps [i];
 							t.CheckAndExecute (TP, EFFECTPIPELINE);

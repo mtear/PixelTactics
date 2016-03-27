@@ -28,99 +28,534 @@ using System.Collections.Generic;
 
 namespace PixelTactics
 {
+	/// <summary>
+	/// An object representing a game Character
+	/// This can basically be expressed as one of the cards in the game
+	/// It will have properties like Life and Attack,
+	/// be able to be under status effects, have certain keywords,
+	/// and have different Abilities depending on where it is played from.
+	/// </summary>
 	public class Character
 	{
 
-		protected int maxhealth, damage, attack;
-		private int _attack, _maxhealth;
-		protected int tattack, tmaxhealth;
-		private bool isdead = false;
-		protected string name;
-		protected bool melee, tmelee;
-		protected bool stunned = false;
-		public bool Stunned{
-			get{
-				return stunned;
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// Gets or sets the Armor value for this unit
+		/// </summary>
+		/// <value>The armor.</value>
+		public int Armor {
+			get {
+				return (tarmor>0)?tarmor:0;
 			}
 			set{
-				if (!IMMUNITIES.Contains (PixelTactics.Damage.TYPE.STUN))
-					stunned = value;
+				tarmor = value;
 			}
 		}
-		protected bool intercept = false, tintercept = false, rooted = false, trooted = false,
-			overkill = false, toverkill = false, zombie = false, tzombie = false;
 
-		List<Damage.TYPE> IMMUNITIES = new List<PixelTactics.Damage.TYPE> ();
+		/// <summary>
+		/// Gets or sets the Attack power for this unit
+		/// </summary>
+		/// <value>The attack.</value>
+		public int Attack{
+			get{
+				return m_attack;
+			}
+			set{
+				m_attack = value;
+			}
+		}
 
-		public Player CONTROLLER;
+		/// <summary>
+		/// The Base Armor value for this unit
+		/// </summary>
+		/// <value>The base armor.</value>
+		public int BaseArmor {
+			get {
+				return armor;
+			}
+		}
 
-		public List<Passive>[] passives = new List<Passive>[2];
-		protected List<Passive>[] _passives = new List<Passive>[2];
-		public Ability order;
-		public List<Trigger>[] triggers = new List<Trigger>[2];
-		protected List<Trigger>[] _triggers = new List<Trigger>[2];
+		/// <summary>
+		/// The Base Attack value for this unit
+		/// </summary>
+		/// <value>The base attack.</value>
+		public int BaseAttack{
+			get{
+				return attack;
+			}
+			set{
+				attack = value;
+			}
+		}
 
-		public bool CanTrap = false;
+		/// <summary>
+		/// The Base Life value for this unit
+		/// </summary>
+		/// <value>The base life.</value>
+		public int BaseLife{
+			get{
+				return maxhealth;
+			}
+		}
 
-		protected List<String> types, _types;
-
+		/// <summary>
+		/// The Base Intercept value for this unit
+		/// </summary>
+		/// <value><c>true</c> if base intercept; otherwise, <c>false</c>.</value>
 		public bool BaseIntercept{
 			get{
 				return intercept;
 			}
 		}
-		public bool BaseRooted {
-			get {
-				return rooted;
+
+		/// <summary>
+		/// The Base Attack type for this unt
+		/// </summary>
+		/// <value><c>true</c> if base ismelee; otherwise, <c>false</c>.</value>
+		public bool BaseIsMelee{
+			get{
+				return melee;
 			}
 		}
+
+		/// <summary>
+		/// The Base Overkill value for this unit
+		/// </summary>
+		/// <value><c>true</c> if base overkill; otherwise, <c>false</c>.</value>
 		public bool BaseOverkill {
 			get {
 				return overkill;
 			}
 		}
+
+		/// <summary>
+		/// The Base Rooted value for this unit
+		/// </summary>
+		/// <value><c>true</c> if base rooted; otherwise, <c>false</c>.</value>
+		public bool BaseRooted {
+			get {
+				return rooted;
+			}
+		}
+
+		/// <summary>
+		/// The Base Zombie value for this unt
+		/// </summary>
+		/// <value><c>true</c> if base zombie; otherwise, <c>false</c>.</value>
+		public bool BaseZombie{
+			get{
+				return zombie;
+			}
+		}
+
+		/// <summary>
+		/// How much Damage this unit has on it
+		/// </summary>
+		/// <value>The damage.</value>
+		public int Damage{
+			get{
+				return damage;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not this unit is dead
+		/// </summary>
+		/// <value><c>true</c> if dead; otherwise, <c>false</c>.</value>
 		public bool Dead{
 			get{
 				return isdead;
 			}
 		}
-
-		public bool Rooted{
+	
+		/// <summary>
+		/// Whether or not this unit has Intercept
+		/// </summary>
+		/// <value><c>true</c> if intercept; otherwise, <c>false</c>.</value>
+		public bool Intercept{
 			get{
-				return trooted;
+				return m_intercept;
+			}
+			set{
+				m_intercept = value;
 			}
 		}
 
-		public bool Overkill{
-			get{
-				return toverkill;
-			}
-		}
-
-		public bool Zombie {
+		/// <summary>
+		/// Whether or not this unit can only attack in Melee
+		/// If false this unit has ranged attack
+		/// </summary>
+		/// <value><c>true</c> if this instance is melee; otherwise,
+		///  <c>false</c>.</value>
+		public bool IsMelee {
 			get {
-				return tzombie;
+				return m_melee;
+			}
+			set{
+				m_melee = value;
 			}
 		}
 
-		public bool Upgrade = false;
-		public int UpgradePlus = 0;
-		public bool Gravedigger = false;
-		public int GravediggerPlus = 0;
-		public int armor = 0, tarmor = 0;
+		/// <summary>
+		/// How much life this unit has
+		/// </summary>
+		/// <value>The life.</value>
+		public int Life{
+			get{
+				return m_maxhealth;
+			}
+			set{
+				m_maxhealth = value;
+			}
+		}
 
+		/// <summary>
+		/// Returns the Name of the Unit (from the Language table)
+		/// </summary>
+		/// <value>The name.</value>
 		public string Name{
 			get{
 				return CONTROLLER.TABLE.STRINGTABLE.Get (name);
 			}
 		}
 
+		/// <summary>
+		/// The Name String Code for the Unit
+		/// </summary>
+		/// <value>The name code.</value>
 		public string NameCode{
 			get{
 				return name;
 			}
 		}
 
+		/// <summary>
+		/// Whether or not this unit has the Overkill keyword
+		/// </summary>
+		/// <value><c>true</c> if overkill; otherwise, <c>false</c>.</value>
+		public bool Overkill{
+			get{
+				return m_overkill;
+			}
+			set{
+				m_overkill = value;
+			}
+		}
+
+		/// <summary>
+		/// How much Life this unit has remaining
+		/// </summary>
+		/// <value>The remaining life.</value>
+		public int RemainingLife {
+			get {
+				int i = m_maxhealth - damage;
+				return (i < 0) ? 0 : i;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not this unit is Rooted
+		/// </summary>
+		/// <value><c>true</c> if rooted; otherwise, <c>false</c>.</value>
+		public bool Rooted{
+			get{
+				return m_rooted;
+			}
+			set{
+				m_rooted = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not this unit is Stunned
+		/// </summary>
+		/// <value><c>true</c> if stunned; otherwise, <c>false</c>.</value>
+		public bool Stunned{
+			get{
+				return stunned;
+			}
+			set{
+				//Become stunned if not immune to stun
+				if (!IMMUNITIES.Contains (PixelTactics.Damage.TYPE.STUN))
+					stunned = value;
+			}
+		}
+
+		/// <summary>
+		/// Whether or not this unit is Zombified
+		/// </summary>
+		/// <value><c>true</c> if Zombified; otherwise, <c>false</c>.</value>
+		public bool Zombie {
+			get {
+				return m_zombie;
+			}
+			set{
+				m_zombie = value;
+			}
+		}
+
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// The Hand Ability for this object
+		/// </summary>
+		public Ability HandAbility;
+
+		/// <summary>
+		/// Whether or not this ability has the Gravedigger keyword
+		/// </summary>
+		public bool Gravedigger = false;
+		/// <summary>
+		/// Whether or not this Character has moved this turn
+		/// </summary>
+		public bool Moved = true;
+		/// <summary>
+		/// Whether or not this Character has the Upgrade keyword
+		/// </summary>
+		public bool Upgrade = false;
+		/// <summary>
+		/// Whether or not this unit's trap can trigger
+		/// </summary>
+		public bool TrapArmed = false;
+	
+		/// <summary>
+		/// The Modifier value for Gravedigger+
+		/// </summary>
+		public int GravediggerPlus = 0;
+		/// <summary>
+		/// The Modifier value for Upgrade+
+		/// </summary>
+		public int UpgradePlus = 0;
+	
+		/// <summary>
+		/// The matrix of Triggers for this Character
+		/// </summary>
+		public List<Trigger>[] Triggers = new List<Trigger>[2];
+		/// <summary>
+		/// The matrix of Passives for this Character
+		/// </summary>
+		public List<Passive>[] Passives = new List<Passive>[2];
+
+		/// <summary>
+		/// The Player that Controls this unit
+		/// </summary>
+		public Player CONTROLLER;
+
+		//----------------------------------------------------------------
+	
+		private bool melee, m_melee, stunned = false, intercept = false,
+			m_intercept = false, rooted = false, m_rooted = false,
+			overkill = false, m_overkill = false, zombie = false,
+			m_zombie = false, isdead = false;
+
+		private List<Damage.TYPE> IMMUNITIES = new List<PixelTactics.Damage.TYPE> ();
+
+		private List<String> types, _types;
+
+		private List<Trigger>[] _triggers = new List<Trigger>[2];
+
+		private List<Passive>[] _passives = new List<Passive>[2];
+
+		private int armor = 0, tarmor = 0, maxhealth, damage, attack,
+			m_attack, m_maxhealth, _attack, _maxhealth;
+
+		private string name;
+
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// Main Constructor
+		/// Initializes the object and sets the variables and the backup
+		/// variables
+		/// </summary>
+		/// <param name="CONTROLLER">The Player that controls this</param>
+		/// <param name="name">This unit's name</param>
+		/// <param name="attack">This unit's attack</param>
+		/// <param name="maxhealth">This unit's health</param>
+		/// <param name="typearray">A list of this unit's Types</param>
+		public Character (Player CONTROLLER, string name, int attack,
+			int maxhealth, params string[] typearray)
+		{
+			//Initialize variables
+			this.CONTROLLER = CONTROLLER;
+			this.name = name;
+			this.attack = attack;
+			this._attack = attack;
+			this.m_attack = attack;
+			this.maxhealth = maxhealth;
+			this.m_maxhealth = maxhealth;
+			this._maxhealth = maxhealth;
+			this.melee = true;
+			this.m_melee = true;
+			this.types = new List<string>(typearray);
+			this._types = new List<string> (typearray);
+
+			Triggers [0] = new List<Trigger> ();
+			Triggers [1] = new List<Trigger> ();
+			_triggers [0] = new List<Trigger> ();
+			_triggers [1] = new List<Trigger> ();
+			Passives [0] = new List<Passive> ();
+			Passives [1] = new List<Passive> ();
+			_passives [0] = new List<Passive> ();
+			_passives [1] = new List<Passive> ();
+		}
+
+		//----------------------------------------------------------------
+
+		/// <summary>
+		/// Adds Damage to this Unit
+		/// </summary>
+		/// <param name="D">The Damage object</param>
+		public void AddDamage(Damage D){
+			//Return if this Character is immune to the Damage Type
+			if (IMMUNITIES.Contains (D.type))
+				return;
+
+			//Get the amount of Damage
+			int DV = D.VALUE - Armor;
+
+			//Armor doesn't stop spell damage
+			if (D.type == PixelTactics.Damage.TYPE.SPELL) DV = D.VALUE;
+
+			//Cap the damage value at 0
+			if (DV < 0)
+				DV = 0;
+
+			//Apply the damage to the unit
+			damage += DV;
+
+			//Add a Unit damage trigger if this unit took damage
+			if(DV > 0)
+				CONTROLLER.TABLE.PIPELINE.Add (new TriggerPacket
+					(Trigger.TYPE.UNITDAMAGE, CONTROLLER,
+						D.SOURCE, null, this));
+		}
+
+		/// <summary>
+		/// Adds a Damage Immunity to the Character
+		/// </summary>
+		/// <param name="type">The Damage Type</param>
+		public void AddImmunity(Damage.TYPE type){
+			if(!IMMUNITIES.Contains(type))
+				IMMUNITIES.Add (type);
+		}
+
+		/// <summary>
+		/// Adds a Passive to the specified row
+		/// </summary>
+		/// <param name="p">The Passive</param>
+		/// <param name="r">The specified row</param>
+		public void AddPassive(Passive p, int r){
+			this.Passives [r].Add(p);
+		}
+
+		/// <summary>
+		/// Add a Trigger to the specified row
+		/// Mainly used for external effects
+		/// </summary>
+		/// <param name="t">The Trigger</param>
+		/// <param name="r">The specified row</param>
+		public void AddTrigger(Trigger t, int r){
+			this.Triggers [r].Add(t);
+		}
+
+		/// <summary>
+		/// Adds a Type to the Character
+		/// </summary>
+		/// <param name="t">The Type</param>
+		public void AddType(string t){
+			if(!types.Contains(t))
+				types.Add(t);
+		}
+			
+		/// <summary>
+		/// Checks if this unit is dead.
+		/// Triggers "Just died" events and a "Create Corpose" if it did
+		/// </summary>
+		public void CheckDead(){
+			//If damage exceeds health
+			if (damage >= maxhealth) {
+				if (!isdead) { //Just died
+					//Make trigger for dying
+					CONTROLLER.TABLE.PIPELINE.Add(new TriggerPacket(
+						Trigger.TYPE.UNITDIED,CONTROLLER,this,
+						CONTROLLER));
+					CONTROLLER.TABLE.PIPELINE.Add(new TriggerPacket(
+						Trigger.TYPE.CREATECORPSE,CONTROLLER,this,
+						CONTROLLER));
+					//Reset permanent stat increases
+					ResetBaseStats ();
+					//Flag that this unit is dead
+					isdead = true;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Heals the for the specified amount
+		/// </summary>
+		/// <param name="D">The Damage object to heal with</param>
+		public void HealDamage(Damage D){
+			//If Zombified, reverse the healing effect
+			if (Zombie)
+				D.VALUE = Math.Abs(D.VALUE) * -1;
+
+			//If Immune to healing, return
+			if (IMMUNITIES.Contains (D.type))
+				return;
+
+			//Remove damage equal to the healing amount
+			damage -= D.VALUE;
+			//If less than 0 damage, clamp it
+			if (damage < 0)
+				damage = 0;
+
+			//Add a Unit Heal trigger to the pipeline
+			CONTROLLER.TABLE.PIPELINE.Add (new TriggerPacket (
+				Trigger.TYPE.UNITHEAL,CONTROLLER, D.SOURCE,
+				null, this));
+		}
+
+		/// <summary>
+		/// Removes the specified immunity type
+		/// </summary>
+		/// <param name="type">The Damage type to remove</param>
+		public void RemoveImmunity(Damage.TYPE type){
+			IMMUNITIES.Remove (type);
+		}
+
+		/// <summary>
+		/// Removes the specified passive.
+		/// </summary>
+		/// <param name="p">The Passive</param>
+		/// <param name="r">The row to remove from</param>
+		public void RemovePassive(Passive p, int r){
+			this.Passives [r].Remove(p);
+		}
+
+		/// <summary>
+		/// Removes the specified trigger
+		/// </summary>
+		/// <param name="t">The Trigger</param>
+		/// <param name="r">The row to remove from</param>
+		public void RemoveTrigger(Trigger t, int r){
+			this.Triggers [r].Remove(t);
+		}
+
+		/// <summary>
+		///  Removes the specified Type
+		/// </summary>
+		/// <param name="t">The Type</param>
+		public void RemoveType(string t){
+			types.Remove (t);
+		}
+
+		/// <summary>
+		/// Resets the base stats of this unit
+		/// Used for modifying base stats for permanent bonuses
+		/// 	that reset on death
+		/// </summary>
 		public void ResetBaseStats(){
 			attack = _attack;
 			maxhealth = _maxhealth;
@@ -131,226 +566,61 @@ namespace PixelTactics
 			overkill = false;
 			IMMUNITIES.Clear ();
 			types = _types;
-			passives = _passives;
-			triggers = _triggers;
+			Passives = _passives;
+			Triggers = _triggers;
 		}
 
-		public void AddImmunity(Damage.TYPE type){
-			if(!IMMUNITIES.Contains(type))
-				IMMUNITIES.Add (type);
-		}
-
-		public void RemoveImmunity(Damage.TYPE type){
-			IMMUNITIES.Remove (type);
-		}
-
-		public int Armor {
-			get {
-				return (tarmor>0)?tarmor:0;
-			}
-		}
-		public int BaseArmor {
-			get {
-				return armor;
-			}
-		}
-
-		public int Attack{
-			get{
-				return tattack;
-			}
-		}
-		public int BaseAttack{
-			get{
-				return attack;
-			}
-		}
-		public int Life{
-			get{
-				return tmaxhealth;
-			}
-		}
-		public int RemainingLife {
-			get {
-				int i = tmaxhealth - damage;
-				return (i < 0) ? 0 : i;
-			}
-		}
-		public int BaseLife{
-			get{
-				return maxhealth;
-			}
-		}
-		public bool BaseZombie{
-			get{
-				return zombie;
-			}
-		}
-		public void SetAttack(int a){
-			this.tattack = a;
-		}
-		public void SetLife(int l){
-			this.tmaxhealth = l;
-		}
-		public void SetAttackType(bool b){
-			this.tmelee = b;
-		}
-		public void SetIntercept(bool b){
-			this.tintercept = b;
-		}
-		public void SetRooted(bool b){
-			this.trooted = b;
-		}
-		public void SetOverkill(bool b){
-			this.toverkill = b;
-		}
-		public void SetArmor(int a){
-			this.tarmor = a;
-		}
-		public void SetZombie(bool b){
-			this.tzombie = b;
-		}
-
-		public bool Melee {
-			get {
-				return tmelee;
-			}
-		}
-		public bool BaseMelee{
-			get{
-				return melee;
-			}
-		}
-		public bool Intercept{
-			get{
-				return tintercept;
-			}
-		}
-		public int Damage{
-			get{
-				return damage;
-			}
-		}
-
-		public bool moved = true;
-
-		public Character (Player CONTROLLER, string name, int attack, int maxhealth, params string[] typearray)
-		{
-			this.CONTROLLER = CONTROLLER;
-			this.name = name;
-			this.attack = attack;
-			this._attack = attack;
-			this.tattack = attack;
-			this.maxhealth = maxhealth;
-			this.tmaxhealth = maxhealth;
-			this._maxhealth = maxhealth;
-			this.melee = true;
-			this.tmelee = true;
-			this.types = new List<string>(typearray);
-			this.types = new List<string> (typearray);
-
-			triggers [0] = new List<Trigger> ();
-			triggers [1] = new List<Trigger> ();
-			_triggers [0] = new List<Trigger> ();
-			_triggers [1] = new List<Trigger> ();
-			passives [0] = new List<Passive> ();
-			passives [1] = new List<Passive> ();
-			_passives [0] = new List<Passive> ();
-			_passives [1] = new List<Passive> ();
-		}
-
+		/// <summary>
+		/// Returns a <see cref="System.String"/> that represents the
+		///  current <see cref="PixelTactics.Character"/>.
+		/// </summary>
+		/// <returns>A <see cref="System.String"/> that represents
+		///  the current <see cref="PixelTactics.Character"/>.</returns>
 		public override string ToString ()
 		{
 			if (Dead)
 				return "CORPSE";
 			return "Name: " + Name + "\t" +
-				"ATK/HP/DMG: " + tattack + (tmelee?"":"R") + (overkill?"O":"") + " " +
-				tmaxhealth + (intercept?"I":"") + (Armor>0?" "+Armor+"A":"") + " " + damage;
+				"ATK/HP/DMG: " + m_attack + (m_melee?"":"R") +
+				(overkill?"O":"") + " " + m_maxhealth + (intercept?"I":"")
+				+ (Armor>0?" "+Armor+"A":"") + " " + damage;
 		}
 
-		public void AddType(string t){
-			if(!types.Contains(t))
-				types.Add(t);
-		}
+		//----------------------------------------------------------------
 
-		public void RemoveType(string t){
-			types.Remove (t);
-		}
-
-		public void AddPassive(Passive p, int r){
-			this.passives [r].Add(p);
-		}
-
-		public void AddTrigger(Trigger t, int r){
-			this.triggers [r].Add(t);
-		}
-
-		public void RemovePassive(Passive p, int r){
-			this.passives [r].Remove(p);
-		}
-
-		public void RemoveTrigger(Trigger t, int r){
-			this.triggers [r].Remove(t);
-		}
-
+		/// <summary>
+		/// Adds the a Hand ability to this card.
+		/// Mostly used for derived classes.
+		/// </summary>
+		/// <param name="a">The new Hand ability</param>
 		protected void _AddHandAbility(Ability a){
-			this.order = a;
+			this.HandAbility = a;
 		}
 
+		/// <summary>
+		/// Adds a passive to this Character in the specified row
+		/// Mostly used for derived classes.
+		/// </summary>
+		/// <param name="p">The new Passive</param>
+		/// <param name="r">The row to add it to</param>
 		protected void _AddPassive(Passive p, int r){
-			this.passives [r].Add(p);
+			this.Passives [r].Add(p);
 			this._passives [r].Add(p);
 		}
 
+		/// <summary>
+		/// Adds a Trigger to this Character in the specified row
+		/// Mostly used for derived classes.
+		/// </summary>
+		/// <param name="t">The trigger to add</param>
+		/// <param name="r">The row to add it to</param>
 		protected void _AddTrigger(Trigger t, int r){
-			this.triggers [r].Add(t);
+			this.Triggers [r].Add(t);
 			this._triggers [r].Add(t);
-		}
-
-		public void AddDamage(Damage D){
-			if (IMMUNITIES.Contains (D.type))
-				return;
-
-			int DV = D.VALUE - Armor;
-
-			if (D.type == PixelTactics.Damage.TYPE.SPELL) DV = D.VALUE;
-			
-			if (DV < 0)
-				DV = 0;
-			damage += DV;
-			if(DV > 0)
-				CONTROLLER.TABLE.PIPELINE.Add (new TriggerPacket (Trigger.TYPE.UNITDAMAGE, CONTROLLER, D.SOURCE, null, this));
-		}
-
-		public void HealDamage(Damage D){
-			if (Zombie)
-				D.VALUE *= -1;
-			if (IMMUNITIES.Contains (D.type))
-				return;
-			damage -= D.VALUE;
-			if (damage < 0)
-				damage = 0;
-			CONTROLLER.TABLE.PIPELINE.Add (new TriggerPacket (Trigger.TYPE.UNITHEAL, CONTROLLER, D.SOURCE, null, this));
-		}
-
-		public void CheckDead(){
-			if (damage >= maxhealth) {
-				if (!isdead) { //just died
-					//Make trigger for dying
-					CONTROLLER.TABLE.PIPELINE.Add(new TriggerPacket(Trigger.TYPE.UNITDIED,CONTROLLER,this,CONTROLLER));
-					CONTROLLER.TABLE.PIPELINE.Add(new TriggerPacket(Trigger.TYPE.CREATECORPSE,CONTROLLER,this,CONTROLLER));
-					ResetBaseStats ();
-				}
-				isdead = true;
-			}
-		}
-
-		public void ModifyBaseAttack(int n){
-			this.attack = n;
 		}
 
 
 	} // End Character class
 
 } // End namespace
-
+	

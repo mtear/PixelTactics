@@ -6,8 +6,6 @@ namespace PixelTactics
 	public class GameBoard
 	{
 
-		//public static List<TriggerPacket> PIPELINE = new List<TriggerPacket>();
-
 		public Character[,] BOARD;
 		private int COLUMNS, ROWS;
 
@@ -60,7 +58,7 @@ namespace PixelTactics
 
 			//Check valid action
 			Character c1 = BOARD [x1, y1];
-			if (c1.moved || c1.Dead)
+			if (c1.Moved || c1.Dead)
 				return false;
 
 			//Add to Pipeline
@@ -77,7 +75,7 @@ namespace PixelTactics
 			
 			//Check valid action
 			Character c1 = BOARD [x1, y1];
-			if (c1.moved || c1.Dead)
+			if (c1.Moved || c1.Dead)
 				return false;
 
 			//Clear corpse if needed
@@ -92,7 +90,7 @@ namespace PixelTactics
 			BOARD[x2,y2] = BOARD[x1,y1];
 			BOARD [x1, y1] = null;
 
-			c1.moved = true;
+			c1.Moved = true;
 			return true;
 		}
 
@@ -181,7 +179,7 @@ namespace PixelTactics
 
 			//Damage type
 			Damage.TYPE DT = Damage.TYPE.MELEE;
-			if (!attacker.Melee)
+			if (!attacker.IsMelee)
 				DT = Damage.TYPE.RANGE;
 
 			if (target != null) {
@@ -314,7 +312,7 @@ namespace PixelTactics
 					Character uc1 = BOARD[a,i];
 					if (uc1 == null)
 						continue;
-					foreach(Passive p in uc1.passives[i]){
+					foreach(Passive p in uc1.Passives[i]){
 						ret.Add (new PassivePair (p, uc1));
 					}
 
@@ -328,7 +326,7 @@ namespace PixelTactics
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
 					if (BOARD [a, i] != null) {
-						BOARD [a, i].moved = false;
+						BOARD [a, i].Moved = false;
 					}
 				}
 			}
@@ -470,7 +468,7 @@ namespace PixelTactics
 
 		private bool CalculateAttackType(int x1, int y1){
 			Character c = OWNER.BOARD.BOARD[x1, y1];
-			bool melee = c.BaseMelee;
+			bool melee = c.BaseIsMelee;
 			if (c == null)
 				return melee;
 
@@ -591,14 +589,14 @@ namespace PixelTactics
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
 					if (BOARD [a, i] != null) {
-						BOARD [a, i].SetAttack (CalculateDamage (a, i));
-						BOARD [a, i].SetLife (CalculateLife (a, i));
-						BOARD [a, i].SetAttackType (CalculateAttackType(a,i));
-						BOARD [a, i].SetIntercept (CalculateIntercept(a,i));
-						BOARD [a, i].SetRooted (CalculateRooted(a,i));
-						BOARD [a, i].SetOverkill (CalculateOverkill(a,i));
-						BOARD [a, i].SetArmor (CalculateArmor(a,i));
-						BOARD [a, i].SetZombie (CalculateZombie(a,i));
+						BOARD [a, i].Attack = CalculateDamage (a, i);
+						BOARD [a, i].Life = CalculateLife (a, i);
+						BOARD [a, i].IsMelee = CalculateAttackType(a,i);
+						BOARD [a, i].Intercept = CalculateIntercept(a,i);
+						BOARD [a, i].Rooted = CalculateRooted(a,i);
+						BOARD [a, i].Overkill = CalculateOverkill(a,i);
+						BOARD [a, i].Armor = CalculateArmor(a,i);
+						BOARD [a, i].Zombie = CalculateZombie(a,i);
 					}
 				}
 			}

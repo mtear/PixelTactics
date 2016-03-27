@@ -37,7 +37,7 @@ namespace PixelTactics
 					if (!MASTER.ContainsKey (c.NameCode))
 						MASTER.Add (c.NameCode, LOOKUP [c.NameCode]);
 					for (int i = 0; i < TableTop.ROWS; i++) {
-						foreach (Passive p in c.passives[i]) {
+						foreach (Passive p in c.Passives[i]) {
 							if (!MASTER.ContainsKey (p.DescriptionCode))
 								MASTER.Add (p.DescriptionCode, LOOKUP [p.DescriptionCode]);
 							foreach (Ability a in p.CreatableAbilities()) {
@@ -51,7 +51,7 @@ namespace PixelTactics
 						}
 					}
 					for (int i = 0; i < TableTop.ROWS; i++) {
-						foreach (Trigger t in c.triggers[i]) {
+						foreach (Trigger t in c.Triggers[i]) {
 							if (!MASTER.ContainsKey (t.DescriptionCode))
 								MASTER.Add (t.DescriptionCode, LOOKUP [t.DescriptionCode]);
 							foreach (Ability a in t.CreatableAbilities()) {
@@ -64,8 +64,8 @@ namespace PixelTactics
 							}
 						}
 					}
-					if (c.order != null && !MASTER.ContainsKey (c.order.DescriptionCode))
-						MASTER.Add (c.order.DescriptionCode, LOOKUP [c.order.DescriptionCode]);
+					if (c.HandAbility != null && !MASTER.ContainsKey (c.HandAbility.DescriptionCode))
+						MASTER.Add (c.HandAbility.DescriptionCode, LOOKUP [c.HandAbility.DescriptionCode]);
 				}
 				P = P.ENEMY;
 			}

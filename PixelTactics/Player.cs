@@ -105,7 +105,7 @@ namespace PixelTactics
 			Character c = HAND.Get(handindex);
 			if (c == null)
 				return false;
-			Active a = (Active)c.order;
+			Active a = (Active)c.HandAbility;
 			if (a == null || a.GetType().IsSubclassOf(typeof(Trigger)))
 				return false;
 			//Get the target if there is any and return false if it fails
@@ -127,7 +127,7 @@ namespace PixelTactics
 			Character c = HAND.Get (handindex);
 			if (c == null)
 				return false;
-			Ability a = (Ability)c.order;
+			Ability a = (Ability)c.HandAbility;
 			if (a == null || !a.GetType().IsSubclassOf(typeof(Trigger)))
 				return false;
 			bool g = AddTrap (c);
@@ -155,7 +155,7 @@ namespace PixelTactics
 			Character c = HAND.Get (handindex);
 			if (c == null)
 				return false;
-			Ability a = (Ability)c.order;
+			Ability a = (Ability)c.HandAbility;
 			if (a == null || !a.GetType().IsSubclassOf(typeof(OnGoing)))
 				return false;
 			bool g = AddTrap (c);
@@ -180,10 +180,10 @@ namespace PixelTactics
 				Console.Write ("< ");
 				if (c == null)
 					Console.Write (" ");
-				else if (c.order.GetType ().IsSubclassOf (typeof(Trigger)))
+				else if (c.HandAbility.GetType ().IsSubclassOf (typeof(Trigger)))
 					Console.Write ("T");
 				else
-					Console.Write (((OnGoing)(c.order)).Timer);
+					Console.Write (((OnGoing)(c.HandAbility)).Timer);
 				Console.Write (" >");
 			}
 			Console.WriteLine ();
@@ -205,9 +205,9 @@ namespace PixelTactics
 			for (int i = 0; i < TRAPS.Length; i++) {
 				if (TRAPS [i] == null)
 					continue;
-				if ((TRAPS [i]).order.GetType ().IsSubclassOf (typeof(OnGoing))) {
+				if ((TRAPS [i]).HandAbility.GetType ().IsSubclassOf (typeof(OnGoing))) {
 					//If this trap slot is an ongoing
-					OnGoing og = (OnGoing)TRAPS [i].order;
+					OnGoing og = (OnGoing)TRAPS [i].HandAbility;
 					foreach (Passive p in og.Passives) {
 						ret.Add (new PassivePair(p, TRAPS[i]));
 					}
@@ -224,10 +224,10 @@ namespace PixelTactics
 			for (int i = 0; i < TRAPS.Length; i++) {
 				if (TRAPS [i] == null)
 					continue;
-				TRAPS [i].CanTrap = true;
-				if (TRAPS [i].order.GetType ().IsSubclassOf (typeof(OnGoing))) {
+				TRAPS [i].TrapArmed = true;
+				if (TRAPS [i].HandAbility.GetType ().IsSubclassOf (typeof(OnGoing))) {
 					//If this trap slot is an ongoing
-					OnGoing og = (OnGoing)TRAPS [i].order;
+					OnGoing og = (OnGoing)TRAPS [i].HandAbility;
 					og.Decrement ();
 					if (og.Expired) {
 						og.Discard (this);

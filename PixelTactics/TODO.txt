@@ -2,3 +2,5 @@
 
 Comment things
 untargetable creatures/Players
+Card Copy with new player function
+Fusion

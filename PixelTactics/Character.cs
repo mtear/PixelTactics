@@ -20,7 +20,7 @@
 /*
  * Character.cs
  * Author: Nic Wilson
- * Last updated: 3/26/2016
+ * Last updated: 3/28/2016
  */
 
 using System;
@@ -150,6 +150,13 @@ namespace Tactics_CoreGameEngine
 		}
 
 		/// <summary>
+		/// Clears the enhancements
+		/// </summary>
+		public void ClearEnhancements(){
+			enhancements.Clear ();
+		}
+
+		/// <summary>
 		/// How much Damage this unit has on it
 		/// </summary>
 		/// <value>The damage.</value>
@@ -166,6 +173,19 @@ namespace Tactics_CoreGameEngine
 		public bool Dead{
 			get{
 				return isdead;
+			}
+		}
+
+		/// <summary>
+		/// Gets the enhancements on this Character
+		/// </summary>
+		/// <value>The enhancements.</value>
+		public List<Enhancement> Enhancements {
+			get {
+				List<Enhancement> ret = new List<Enhancement> (
+					                        baseenhancements);
+				ret.AddRange (enhancements);
+				return ret;
 			}
 		}
 	
@@ -283,6 +303,20 @@ namespace Tactics_CoreGameEngine
 		}
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this 
+		/// <see cref="Tactics_CoreGameEngine.Character"/> is targetable.
+		/// </summary>
+		/// <value><c>true</c> if targetable; otherwise, <c>false</c>.</value>
+		public bool Targetable{
+			get{
+				return targetable;
+			}
+			set{
+				targetable = value;
+			}
+		}
+
+		/// <summary>
 		/// Whether or not this unit is Zombified
 		/// </summary>
 		/// <value><c>true</c> if Zombified; otherwise, <c>false</c>.</value>
@@ -347,9 +381,16 @@ namespace Tactics_CoreGameEngine
 		private bool melee, m_melee, stunned = false, intercept = false,
 			m_intercept = false, rooted = false, m_rooted = false,
 			overkill = false, m_overkill = false, zombie = false,
-			m_zombie = false, isdead = false;
+			m_zombie = false, isdead = false, targetable = true;
 
+		/// <summary>
+		/// The Damage Immunities this Character has
+		/// </summary>
 		private List<Damage.TYPE> IMMUNITIES = new List<Tactics_CoreGameEngine.Damage.TYPE> ();
+
+		private List<Enhancement> enhancements = new List<Enhancement> ();
+		private List<Enhancement> baseenhancements = new List<Enhancement> ();
+
 
 		private List<String> types, _types;
 
@@ -404,6 +445,14 @@ namespace Tactics_CoreGameEngine
 		//----------------------------------------------------------------
 
 		/// <summary>
+		/// Adds a base enhancement.
+		/// </summary>
+		/// <param name="enhancement">An Enhancement.</param>
+		public void AddBaseEnhancement(Enhancement enhancement){
+			this.baseenhancements.Add (enhancement);
+		}
+
+		/// <summary>
 		/// Adds Damage to this Unit
 		/// </summary>
 		/// <param name="D">The Damage object</param>
@@ -430,6 +479,14 @@ namespace Tactics_CoreGameEngine
 				CONTROLLER.TABLE.PIPELINE.Add (new TriggerPacket
 					(Trigger.TYPE.UNITDAMAGE, CONTROLLER,
 						D.Source, null, this));
+		}
+
+		/// <summary>
+		/// Adds a enhancement.
+		/// </summary>
+		/// <param name="enhancement">An Enhancement.</param>
+		public void AddEnhancement(Enhancement enhancement){
+			this.enhancements.Add (enhancement);
 		}
 
 		/// <summary>
@@ -589,6 +646,8 @@ namespace Tactics_CoreGameEngine
 			types = _types;
 			Passives = _passives;
 			Triggers = _triggers;
+			enhancements.Clear ();
+			baseenhancements.Clear ();
 		}
 
 		/// <summary>

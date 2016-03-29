@@ -1,5 +1,3 @@
 ﻿TODO:
 
 Comment things
-untargetable creatures/Players
-Fusion

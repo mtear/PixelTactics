@@ -95,6 +95,15 @@ namespace Tactics_CoreGameEngine
 			//If the target isn't good return no Target acquired
 			if (TARGET == null || !ValidTarget(TARGET))
 				return false;
+			//If we're targeting a creature and it's not targetable return false
+			if (!TARGET.TARGETPLAYER && !TARGET.CTARGET.Targetable)
+				return false;
+			//If we're targeting a player and it's a bad target
+			if (TARGET.TARGETPLAYER && TARGET.PTARGET == null)
+				return false;
+			//If we're targeting a player and he's not targetable
+			if (TARGET.TARGETPLAYER && !TARGET.PTARGET.Targetable)
+				return false;
 
 			//Otherwise a valid target was acquired
 			return true;

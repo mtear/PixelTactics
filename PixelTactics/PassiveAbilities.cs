@@ -20,7 +20,7 @@
 /*
  * PassiveAbilities.cs
  * Author: Nic Wilson
- * Last updated: 3/26/2016
+ * Last updated: 3/28/2016
  */
 
 using System;
@@ -83,11 +83,27 @@ namespace Tactics_CoreGameEngine
 		public override bool ModifyZombie (bool zombie, Character target, Character user, Player PLAYER){
 			return zombie;
 		}
+
+		public override int ModifyDamageToX (int damage, Character user, Character attacker, Character defender){
+			return damage;
+		}
+
+		public override int ModifyMaxHandSize (int handsize, Character user, Player PLAYER){
+			return handsize;
+		}
+
+		public override bool ModifyTargetable (bool targetable, Character target, Character user, Player PLAYER){
+			return targetable;
+		}
+
+		public override bool ModifyPlayerTargetable (bool targetable, Character user, Player PLAYER){
+			return targetable;
+		}
 	}
 
 	public class TestPassive1 : Passive //Give overkill
 	{
-		public TestPassive1 () : base("PA000001", "", 0)
+		public TestPassive1 () : base("PA000001", "PAD000001", 0)
 		{
 		}
 
@@ -124,12 +140,31 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override int ModifyArmor (int armor, Character target, Character user, Player PLAYER){
-			if(target == user) return armor+2;
+			if (target == user) {
+				target.AddEnhancement (new Enhancement (GetDescription(PLAYER), NameCode));
+				return armor + 2;
+			}
 			return armor;
 		}
 
 		public override bool ModifyZombie (bool zombie, Character target, Character user, Player PLAYER){
 			return zombie;
+		}
+
+		public override int ModifyDamageToX (int damage, Character user, Character attacker, Character defender){
+			return damage;
+		}
+
+		public override int ModifyMaxHandSize (int handsize, Character user, Player PLAYER){
+			return handsize;
+		}
+
+		public override bool ModifyTargetable (bool targetable, Character target, Character user, Player PLAYER){
+			return targetable;
+		}
+
+		public override bool ModifyPlayerTargetable (bool targetable, Character user, Player PLAYER){
+			return targetable;
 		}
 	}
 

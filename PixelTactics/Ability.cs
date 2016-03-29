@@ -20,7 +20,7 @@
 /*
  * Ability.cs
  * Author: Nic Wilson
- * Last updated: 3/26/2016
+ * Last updated: 3/28/2016
  */
 
 using System;
@@ -44,10 +44,10 @@ namespace Tactics_CoreGameEngine
 	
 		private string name;
 		/// <summary>
-		/// The name of the Ability.
+		/// The name code of the Ability.
 		/// </summary>
 		/// <value>The name.</value>
-		public String Name{
+		public String NameCode{
 			get{
 				return name;
 			}
@@ -103,6 +103,15 @@ namespace Tactics_CoreGameEngine
 		/// <param name="P">A Player to reference for the TableTop</param>
 		public String GetDescription(Player P){
 			return P.TABLE.STRINGTABLE.Get (description);
+		}
+
+		/// <summary>
+		/// Gets the name of this Ability
+		/// </summary>
+		/// <returns>The name.</returns>
+		/// <param name="P">A Player to reference</param>
+		public String GetName(Player P){
+			return P.TABLE.STRINGTABLE.Get (name);
 		}
 
 	} // End Ability class

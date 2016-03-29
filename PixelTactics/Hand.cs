@@ -20,7 +20,7 @@
 /*
 * Hand.cs
 * Author: Nic Wilson
-* Last updated: 3/27/2016
+* Last updated: 3/28/2016
 */
 
 using System;
@@ -82,9 +82,19 @@ namespace Tactics_CoreGameEngine
 		/// <param name="c">Card to add</param>
 		/// <param name="MaxHandSize">The maximum hand size for this Hand</param> 
 		public void AddCard(Character c, int MaxHandSize, Hand DiscardPile){
+			//Don't allow null cards
+			if (c == null)
+				return;
+			
 			//Discard the card if there are too many cards in this hand
 			if (hand.Count >= MaxHandSize) {
 				DiscardPile.AddCard (c, 999, null);
+				c.CONTROLLER.TABLE.PIPELINE.Add (
+					new TriggerPacket (
+						Trigger.TYPE.HANDTOOFULL,
+						c.CONTROLLER,
+						c,
+						c.CONTROLLER));
 			} else
 				hand.Add (c);
 		}
@@ -96,12 +106,26 @@ namespace Tactics_CoreGameEngine
 		/// <param name="c">The card to discard</param>
 		/// <param name="d">The Hand to place the card into</param>
 		public void Discard(Character c, Hand d){
+			//Don't allow null entries
+			if (c == null)
+				return;
+			
 			//Reset any stat increases on the card
 			c.ResetBaseStats ();
 			//Remove the card from the Hand
-			hand.Remove (c);
+			bool removed = hand.Remove (c);
 			//Add the card into the other Hand (discard pile)
 			d.AddCard (c, 999, null);
+
+			//Raise a trigger event if a card was removed
+			if (removed) {
+				c.CONTROLLER.TABLE.PIPELINE.Add (
+					new TriggerPacket (
+						Trigger.TYPE.DISCARDCARD,
+						c.CONTROLLER,
+						c,
+						c.CONTROLLER));
+			}
 		}
 
 		/// <summary>
@@ -112,7 +136,17 @@ namespace Tactics_CoreGameEngine
 			//Reset any stat increases on the card
 			c.ResetBaseStats ();
 			//Remove the card
-			hand.Remove (c);
+			bool removed = hand.Remove (c);
+
+			//Raise a trigger event if a card was removed
+			if (removed) {
+				c.CONTROLLER.TABLE.PIPELINE.Add (
+					new TriggerPacket (
+						Trigger.TYPE.DISCARDCARD,
+						c.CONTROLLER,
+						c,
+						c.CONTROLLER));
+			}
 		}
 
 		/// <summary>
@@ -140,6 +174,12 @@ namespace Tactics_CoreGameEngine
 			//Discard the card if there are too many cards in this hand
 			if (PLAYER.HAND.Cards.Count >= PLAYER.MaxHandSize) {
 				PLAYER.GRAVEYARD.AddCard (c, 999, null);
+				c.CONTROLLER.TABLE.PIPELINE.Add (
+					new TriggerPacket (
+						Trigger.TYPE.HANDTOOFULL,
+						c.CONTROLLER,
+						c,
+						c.CONTROLLER));
 			}else hand.Add(c);
 			return true;
 		}

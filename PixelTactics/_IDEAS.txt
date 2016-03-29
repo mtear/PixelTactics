@@ -10,3 +10,4 @@
  * Upgrade
  * Gravedigger
  * Vanilla
+ Fusion

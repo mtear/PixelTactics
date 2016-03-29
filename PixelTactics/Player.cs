@@ -20,7 +20,7 @@
 /*
 * Player.cs
 * Author: Nic Wilson
-* Last updated: 3/27/2016
+* Last updated: 3/28/2016
 */
 
 using System;
@@ -39,6 +39,7 @@ namespace Tactics_CoreGameEngine
 		public Player ENEMY;
 		public int Life;
 		private int MAXLIFE;
+		public bool Targetable = true;
 		public CommandInterface COMMANDINTERFACE;
 		public bool RevealHandEffect = false;
 
@@ -46,13 +47,16 @@ namespace Tactics_CoreGameEngine
 
 		public TableTop TABLE;
 
-		private int BaseMaxHandSize = 5;
-		private int HandSizeModifier = 0;
+		public int BaseMaxHandSize = 5;
+		private int m_MaxHandSize = 0;
 		public int MaxHandSize {
 			get {
-				if (BaseMaxHandSize + HandSizeModifier < 0)
+				if (m_MaxHandSize < 0)
 					return 0;
-				return BaseMaxHandSize + HandSizeModifier;
+				return m_MaxHandSize;
+			}
+			set{
+				m_MaxHandSize = value;
 			}
 		}
 

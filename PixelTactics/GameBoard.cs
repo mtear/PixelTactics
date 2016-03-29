@@ -20,7 +20,7 @@
 /*
 * GameBoard.cs
 * Author: Nic Wilson
-* Last updated: 3/27/2016
+* Last updated: 3/28/2016
 */
 
 using System;
@@ -127,13 +127,45 @@ namespace Tactics_CoreGameEngine
 		//----------------------------------------------------------------
 
 		/// <summary>
+		/// Calculates the modified damage a unit will do to another unit
+		/// </summary>
+		/// <returns>The modified attack damage</returns>
+		/// <param name="damage">A Damage object</param>
+		/// <param name="attacker">The Attacker.</param>
+		/// <param name="target">The Target.</param>
+		public Damage CalculateModifyDamageToX(Damage damage, Character attacker,
+			Character target){
+
+			//Get the base value
+			int value = damage.Value;
+			//Gather all the passives up
+			List<PassivePair> AP = attacker.CONTROLLER.GAMEBOARD.GatherPassives();
+			List<PassivePair> EP = attacker.CONTROLLER.ENEMY.GAMEBOARD.GatherPassives ();
+			//Modify the damage value using the passives
+			foreach (PassivePair P in AP) {
+				value = P.p.ModifyDamageToX (value, P.c, attacker, target);
+			}
+			foreach (PassivePair P in EP) {
+				value = P.p.ModifyDamageToX (value, P.c, attacker, target);
+			}
+
+			//Modify the damage object
+			damage.Value = value;
+			//return
+			return damage;
+		}
+
+		/// <summary>
 		/// Triggers the GameBoard to calculate modified unit stats from passives
 		/// </summary>
 		public void CalculateUnitStats(){
 			Owner.RevealHandEffect = CalculateRevealHand ();
+			Owner.MaxHandSize = CalculateMaxHandSize ();
+			Owner.Targetable = CalculatePlayerTargetable ();
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
 					if (Board [a, i] != null) {
+						Board [a, i].ClearEnhancements ();
 						Board [a, i].Attack = CalculateAttack (a, i);
 						Board [a, i].Life = CalculateLife (a, i);
 						Board [a, i].IsMelee = CalculateAttackType(a,i);
@@ -142,6 +174,7 @@ namespace Tactics_CoreGameEngine
 						Board [a, i].Overkill = CalculateOverkill(a,i);
 						Board [a, i].Armor = CalculateArmor(a,i);
 						Board [a, i].Zombie = CalculateZombie(a,i);
+						Board [a, i].Targetable = CalculateTargetable (a, i);
 					}
 				}
 			}
@@ -310,24 +343,24 @@ namespace Tactics_CoreGameEngine
 
 			//Perform the attack
 			if (target != null) {
-				target.AddDamage (new Damage(DT, attacker.Attack, attacker));
+				target.AddDamage (GetDamage(DT, attacker.Attack, attacker, target));
 				//Calculate the Overkill keyword
 				for (int r = 0; r < 2; r++) {
 					if (attacker.Overkill && target.Damage >= target.Life) {
 						int overkilldamage = target.Damage - target.Life;
 						target = ENEMY.GAMEBOARD.FindOverkillTarget (target);
 						if (target != null) {
-							target.AddDamage (new Damage (
-								DT, overkilldamage, attacker));
+							target.AddDamage (GetDamage (
+								DT, overkilldamage, attacker, target));
 						} else {
-							ENEMY.AddDamage (new Damage (
-								DT, overkilldamage, attacker));
+							ENEMY.AddDamage (GetDamage(
+								DT, overkilldamage, attacker, null));
 						}
 					}
 				}
 			} else {
 				//If there isn't a Character target, hit the enemy Player
-				ENEMY.AddDamage (new Damage(DT, attacker.Attack, attacker));
+				ENEMY.AddDamage (GetDamage(DT, attacker.Attack, attacker, null));
 			}
 
 			//Attack successful
@@ -671,6 +704,26 @@ namespace Tactics_CoreGameEngine
 		}
 
 		/// <summary>
+		/// Calculates the max size of the owner's hand
+		/// </summary>
+		/// <returns>The max hand size.</returns>
+		private int CalculateMaxHandSize(){
+			int handsize = Owner.BaseMaxHandSize;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				handsize = pp.p.ModifyMaxHandSize (handsize, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				handsize = pp.p.ModifyMaxHandSize (handsize, pp.c, Owner.ENEMY);
+			}
+
+			return handsize;
+		}
+
+		/// <summary>
 		/// Calculates the Overkill value of a Character
 		/// </summary>
 		/// <returns>The modified Overkill value</returns>
@@ -693,6 +746,26 @@ namespace Tactics_CoreGameEngine
 			}
 
 			return overkill;
+		}
+
+		/// <summary>
+		/// Calculates if the Owner should be targetable
+		/// </summary>
+		/// <returns>Whether or not the owner is targetable</returns>
+		private bool CalculatePlayerTargetable(){
+			bool reveal = true;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				reveal = pp.p.ModifyPlayerTargetable (reveal, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				reveal = pp.p.ModifyPlayerTargetable (reveal, pp.c, Owner.ENEMY);
+			}
+
+			return reveal;
 		}
 
 		/// <summary>
@@ -741,6 +814,31 @@ namespace Tactics_CoreGameEngine
 		}
 
 		/// <summary>
+		/// Calculates the Targetable value of a Character
+		/// </summary>
+		/// <returns>The modified Targetable value</returns>
+		/// <param name="x1">A column</param>
+		/// <param name="y1">A row</param>
+		private bool CalculateTargetable(int x1, int y1){
+			Character c = Owner.GAMEBOARD.Board[x1, y1];
+			bool intercept = true;
+			if (c == null)
+				return intercept;
+
+			List<PassivePair> AP = Owner.GatherPassives ();
+			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
+
+			foreach (PassivePair pp in AP) {
+				intercept = pp.p.ModifyTargetable (intercept, c, pp.c, Owner);
+			}
+			foreach (PassivePair pp in EP) {
+				intercept = pp.p.ModifyTargetable (intercept, c, pp.c, Owner.ENEMY);
+			}
+
+			return intercept;
+		}
+
+		/// <summary>
 		/// Calculates the Zombie value of a Character
 		/// </summary>
 		/// <returns>The modified zmobie value</returns>
@@ -776,6 +874,26 @@ namespace Tactics_CoreGameEngine
 			if (y == ROWS)
 				return null;
 			return Board [x, y];
+		}
+
+		/// <summary>
+		/// Creates a Damage object with the specified Parameters
+		/// </summary>
+		/// <returns>The damage attacker gives to the target</returns>
+		/// <param name="type">A damage type</param>
+		/// <param name="value">A damage value</param>
+		/// <param name="attacker">The attacker</param>
+		/// <param name="target">The target</param>
+		private Damage GetDamage(Damage.TYPE type, int value, Character attacker,
+			Character target){
+
+			//Create a base damage object
+			Damage damage = new Damage (type, value, attacker);
+			//Modify the damage via passives
+			damage = CalculateModifyDamageToX (damage, attacker, target);
+			//Return
+			return damage;
+
 		}
 
 		/// <summary>

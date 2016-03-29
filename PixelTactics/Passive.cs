@@ -20,7 +20,7 @@
 /*
 * Passive.cs
 * Author: Nic Wilson
-* Last updated: 3/27/2016
+* Last updated: 3/28/2016
 */
 
 using System;
@@ -57,6 +57,14 @@ namespace Tactics_CoreGameEngine
 		public abstract int ModifyArmor (int armor, Character target, Character user, Player PLAYER);
 
 		public abstract bool ModifyZombie (bool zombie, Character target, Character user, Player PLAYER);
+
+		public abstract int ModifyDamageToX (int damage, Character user, Character attacker, Character defender);
+
+		public abstract int ModifyMaxHandSize (int handsize, Character user, Player PLAYER);
+
+		public abstract bool ModifyTargetable (bool targetable, Character target, Character user, Player PLAYER);
+
+		public abstract bool ModifyPlayerTargetable (bool targetable, Character user, Player PLAYER);
 
 	} // End Passive class
 

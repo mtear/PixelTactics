@@ -57,6 +57,7 @@
     <Compile Include="CommandInterface.cs" />
     <Compile Include="Target.cs" />
     <Compile Include="StringTable.cs" />
+    <Compile Include="Enhancement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -143,10 +143,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = attacker.CONTROLLER.ENEMY.GAMEBOARD.GatherPassives ();
 			//Modify the damage value using the passives
 			foreach (PassivePair P in AP) {
-				value = P.p.ModifyDamageToX (value, P.c, attacker, target);
+				value = P.PASSIVE.ModifyDamageToX (value, P.CHARACTER, attacker, target);
 			}
 			foreach (PassivePair P in EP) {
-				value = P.p.ModifyDamageToX (value, P.c, attacker, target);
+				value = P.PASSIVE.ModifyDamageToX (value, P.CHARACTER, attacker, target);
 			}
 
 			//Modify the damage object
@@ -285,7 +285,7 @@ namespace Tactics_CoreGameEngine
 				}
 			}
 			//Sort the passives by priority
-			ret.Sort((x,y) => x.p.Priority.CompareTo(y.p.Priority));
+			ret.Sort((x,y) => x.PASSIVE.Priority.CompareTo(y.PASSIVE.Priority));
 			return ret;
 		}
 
@@ -582,10 +582,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				armor = pp.p.ModifyArmor (armor, c, pp.c, Owner);
+				armor = pp.PASSIVE.ModifyArmor (armor, c, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				armor = pp.p.ModifyArmor (armor, c, pp.c, Owner.ENEMY);
+				armor = pp.PASSIVE.ModifyArmor (armor, c, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			//clamp and return
@@ -611,10 +611,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				damage = pp.p.ModifyDamage (damage, c, pp.c, Owner);
+				damage = pp.PASSIVE.ModifyDamage (damage, c, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				damage = pp.p.ModifyDamage (damage, c, pp.c, Owner.ENEMY);
+				damage = pp.PASSIVE.ModifyDamage (damage, c, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			//clamp and return
@@ -640,10 +640,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				melee = pp.p.ModifyAttackType (melee, c, pp.c, Owner);
+				melee = pp.PASSIVE.ModifyAttackType (melee, c, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				melee = pp.p.ModifyAttackType (melee, c, pp.c, Owner.ENEMY);
+				melee = pp.PASSIVE.ModifyAttackType (melee, c, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			return melee;
@@ -665,10 +665,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				intercept = pp.p.ModifyIntercept (intercept, c, pp.c, Owner);
+				intercept = pp.PASSIVE.ModifyIntercept (intercept, c, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				intercept = pp.p.ModifyIntercept (intercept, c, pp.c, Owner.ENEMY);
+				intercept = pp.PASSIVE.ModifyIntercept (intercept, c, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			return intercept;
@@ -690,10 +690,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				life = pp.p.ModifyLife (life, c, pp.c, Owner);
+				life = pp.PASSIVE.ModifyLife (life, c, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				life = pp.p.ModifyLife (life, c, pp.c, Owner.ENEMY);
+				life = pp.PASSIVE.ModifyLife (life, c, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			//clamp and return
@@ -714,10 +714,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				handsize = pp.p.ModifyMaxHandSize (handsize, pp.c, Owner);
+				handsize = pp.PASSIVE.ModifyMaxHandSize (handsize, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				handsize = pp.p.ModifyMaxHandSize (handsize, pp.c, Owner.ENEMY);
+				handsize = pp.PASSIVE.ModifyMaxHandSize (handsize, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			return handsize;
@@ -739,10 +739,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				overkill = pp.p.ModifyOverkill (overkill, c, pp.c, Owner);
+				overkill = pp.PASSIVE.ModifyOverkill (overkill, c, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				overkill = pp.p.ModifyOverkill (overkill, c, pp.c, Owner.ENEMY);
+				overkill = pp.PASSIVE.ModifyOverkill (overkill, c, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			return overkill;
@@ -759,10 +759,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				reveal = pp.p.ModifyPlayerTargetable (reveal, pp.c, Owner);
+				reveal = pp.PASSIVE.ModifyPlayerTargetable (reveal, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				reveal = pp.p.ModifyPlayerTargetable (reveal, pp.c, Owner.ENEMY);
+				reveal = pp.PASSIVE.ModifyPlayerTargetable (reveal, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			return reveal;
@@ -779,10 +779,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				reveal = pp.p.RevealYourHand (reveal, pp.c, Owner);
+				reveal = pp.PASSIVE.RevealYourHand (reveal, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				reveal = pp.p.RevealEnemyHand (reveal, pp.c, Owner.ENEMY);
+				reveal = pp.PASSIVE.RevealEnemyHand (reveal, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			return reveal;
@@ -804,10 +804,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				intercept = pp.p.ModifyRooted (intercept, c, pp.c, Owner);
+				intercept = pp.PASSIVE.ModifyRooted (intercept, c, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				intercept = pp.p.ModifyRooted (intercept, c, pp.c, Owner.ENEMY);
+				intercept = pp.PASSIVE.ModifyRooted (intercept, c, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			return intercept;
@@ -829,10 +829,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				intercept = pp.p.ModifyTargetable (intercept, c, pp.c, Owner);
+				intercept = pp.PASSIVE.ModifyTargetable (intercept, c, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				intercept = pp.p.ModifyTargetable (intercept, c, pp.c, Owner.ENEMY);
+				intercept = pp.PASSIVE.ModifyTargetable (intercept, c, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			return intercept;
@@ -854,10 +854,10 @@ namespace Tactics_CoreGameEngine
 			List<PassivePair> EP = Owner.ENEMY.GatherPassives ();
 
 			foreach (PassivePair pp in AP) {
-				zombie = pp.p.ModifyZombie (zombie, c, pp.c, Owner);
+				zombie = pp.PASSIVE.ModifyZombie (zombie, c, pp.CHARACTER, Owner);
 			}
 			foreach (PassivePair pp in EP) {
-				zombie = pp.p.ModifyZombie (zombie, c, pp.c, Owner.ENEMY);
+				zombie = pp.PASSIVE.ModifyZombie (zombie, c, pp.CHARACTER, Owner.ENEMY);
 			}
 
 			return zombie;

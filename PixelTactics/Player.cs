@@ -244,7 +244,7 @@ namespace Tactics_CoreGameEngine
 			}
 			//Board passives
 			ret.AddRange(GAMEBOARD.GatherPassives());
-			ret.Sort((x,y) => x.p.Priority.CompareTo(y.p.Priority));
+			ret.Sort((x,y) => x.PASSIVE.Priority.CompareTo(y.PASSIVE.Priority));
 			return ret;
 		}
 

@@ -40,6 +40,7 @@ namespace Tactics_CoreGameEngine
 		public List<TriggerPair> EFFECTPIPELINE = new List<TriggerPair>();
 
 		public Player WINNER = null;
+		public Player CURRENTTURN = null;
 		public Player P1;
 		public Player P2;
 
@@ -98,6 +99,8 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void Turn(Player P){
+			CURRENTTURN = P;
+
 			//Add Start turn trigger event
 			PIPELINE.Add (new TriggerPacket (Trigger.TYPE.STARTTURN,
 				P, null, P));

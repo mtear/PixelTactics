@@ -68,10 +68,10 @@ namespace Tactics_CoreGameEngine
 			Turn (PLAYER); //first turn
 		}
 
-		public void Flush(Player P, Command c){
+		public bool Flush(Player P, Command c){
 			//Ignore if it's not this player's turn
 			if (P != CURRENTTURN)
-				return;
+				return false;
 
 			//Find if this is a valid move or not
 			//Execute if it is
@@ -94,6 +94,7 @@ namespace Tactics_CoreGameEngine
 			}
 
 			P.EndTurn ();
+			return validturn;
 		}
 
 		public void Turn(Player P){
@@ -113,8 +114,10 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void TakeTurn(Player PLAYER){
-			if (!VALID)
+			if (!VALID) {
 				EndGame ();
+				return;
+			}
 
 			//Kick off Command grabbing
 			PLAYER.GetTurnCommand ();
@@ -138,7 +141,7 @@ namespace Tactics_CoreGameEngine
 				Console.WriteLine ("\n\n\nTHE GAME IS A DRAW");
 			else
 				Console.WriteLine ("\n\n\n" + WINNER.Name + " WINS!");
-			Environment.Exit (0);
+			//Environment.Exit (0);
 		}
 
 		public void Print(Player P){

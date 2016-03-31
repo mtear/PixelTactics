@@ -123,6 +123,9 @@ namespace Tactics_CoreGameEngine
 
 		private void SwitchTurn(){
 			currentplayercount++;
+			if (currentplayercount == 1) {
+				FullAttack (CURRENTTURN);
+			}
 			if (currentplayercount == 2) {
 				currentplayercount = 0;
 				CURRENTTURN = CURRENTTURN.ENEMY;

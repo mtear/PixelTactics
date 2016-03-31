@@ -46,6 +46,8 @@ namespace Tactics_CoreGameEngine
 
 		public StringTable STRINGTABLE;
 
+		private int currentplayercount = 1;
+
 		public TableTop (String LCODE, Player P1, Player P2)
 		{
 			P1.TABLE = this;
@@ -64,38 +66,34 @@ namespace Tactics_CoreGameEngine
 
 		public void Play(Player PLAYER){
 			Turn (PLAYER); //first turn
-			SettleState (PLAYER);
-			while (VALID) {
-				Turn (PLAYER.ENEMY);
-				if (!VALID)break;
-				SettleState (PLAYER);
-				if (!VALID)break;
-				FullAttack (PLAYER.ENEMY);
-				if (!VALID)break;
-				SettleState (PLAYER);
-				if (!VALID)break;
-				Turn (PLAYER.ENEMY);
-				if (!VALID)break;
-				SettleState (PLAYER);
-				if (!VALID)break;
-				Turn (PLAYER);
-				if (!VALID)break;
-				SettleState (PLAYER);
-				if (!VALID)break;
-				FullAttack (PLAYER);
-				if (!VALID)break;
-				SettleState (PLAYER);
-				if (!VALID)break;
-				Turn (PLAYER);
-				if (!VALID)break;
-				SettleState (PLAYER);
-				if (!VALID)break;
+		}
+
+		public void Flush(Player P, Command c){
+			//Ignore if it's not this player's turn
+			if (P != CURRENTTURN)
+				return;
+
+			//Find if this is a valid move or not
+			//Execute if it is
+			bool validturn = true;
+			try{
+				Command.Execute (c);
+			}catch{validturn = false;}
+			validturn = c.Type == Command.TYPE.PASS;
+
+			//If it wasn't a valid turn, repeat grab
+			if (!validturn) {
+				SettleState (P);
+				Print (P);
+				TakeTurn (P);
+			} else {
+				//Successful turn,
+				//Switch player's and move on
+				SwitchTurn ();
+				Turn (CURRENTTURN);
 			}
-			Print (PLAYER);
-			if (WINNER == null)
-				Console.WriteLine ("\n\n\nTHE GAME IS A DRAW");
-			else
-				Console.WriteLine ("\n\n\n" + WINNER.Name + " WINS!");
+
+			P.EndTurn ();
 		}
 
 		public void Turn(Player P){
@@ -109,12 +107,35 @@ namespace Tactics_CoreGameEngine
 			P.StartTurn ();
 			if (!firstturn) P.DrawCard (); //Draw if not the first turn
 			else firstturn = false;
-			do {
-				SettleState(P);
-				Print (P);
-			} while(TakeTurn (P));
+			SettleState(P);
+			Print (P);
+			TakeTurn (P);
+		}
 
-			P.EndTurn ();
+		public void TakeTurn(Player PLAYER){
+			if (!VALID)
+				EndGame ();
+
+			//Kick off Command grabbing
+			PLAYER.GetTurnCommand ();
+			//Code will resume in Flush()
+		}
+
+		private void SwitchTurn(){
+			currentplayercount++;
+			if (currentplayercount == 2) {
+				currentplayercount = 0;
+				CURRENTTURN = CURRENTTURN.ENEMY;
+			}
+		}
+
+		public void EndGame(){
+			Print (CURRENTTURN);
+			if (WINNER == null)
+				Console.WriteLine ("\n\n\nTHE GAME IS A DRAW");
+			else
+				Console.WriteLine ("\n\n\n" + WINNER.Name + " WINS!");
+			Environment.Exit (0);
 		}
 
 		public void Print(Player P){
@@ -193,18 +214,6 @@ namespace Tactics_CoreGameEngine
 				TP.PLAYER = (P.DoesControlUnit (TP.USER)) ? P : P.ENEMY;
 				TP.INITIATOR = (P.DoesControlUnit (TP.USER)) ? P : P.ENEMY;
 			}
-		}
-
-		public bool TakeTurn(Player PLAYER){
-			if (!VALID)
-				return false;
-			
-			Console.Write (PLAYER.Name + " ");
-			Command c = PLAYER.GetTurnCommand ();
-			try{
-				Command.Execute (c);
-			}catch{return false;}
-			return c == null || c.Type != Command.TYPE.PASS;
 		}
 
 		public void FullAttack(Player P){

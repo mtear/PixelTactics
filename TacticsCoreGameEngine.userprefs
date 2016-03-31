@@ -1,10 +1,9 @@
 ﻿<Properties StartupItem="PixelTactics/Tactics_CoreGameEngine.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PixelTactics/CommandInterface.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PixelTactics/TableTop.cs">
     <Files>
-      <File FileName="PixelTactics/_TODO.txt" Line="3" Column="15" />
-      <File FileName="PixelTactics/TableTop.cs" Line="103" Column="4" />
-      <File FileName="PixelTactics/CommandInterface.cs" Line="1" Column="1" />
+      <File FileName="PixelTactics/_TODO.txt" Line="1" Column="1" />
+      <File FileName="PixelTactics/TableTop.cs" Line="68" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

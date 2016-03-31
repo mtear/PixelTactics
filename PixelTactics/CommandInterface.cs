@@ -50,14 +50,16 @@ namespace Tactics_CoreGameEngine
 		/// <summary>
 		/// Gets the Command for the Player's turn
 		/// By default this let's the Player type via the terminal
+		/// Flushes back to the Tabletop
 		/// </summary>
-		/// <returns>The turn command.</returns>
-		public virtual Command GetTurnCommand(){
+		public virtual void GetTurnCommand(){
+			Console.Write (P.Name + " ");
 			Console.Write ("*CMD: ");
 			String command = Console.ReadLine ();
 			//Create a Command by parsing the string
 			Command c = Command.Parse (command, P);
-			return c;
+			//Trigger the table to move forward
+			P.TABLE.Flush(P, c);
 		}
 
 		/// <summary>
@@ -82,8 +84,9 @@ namespace Tactics_CoreGameEngine
 	public class EnemyAI_Pass : CommandInterface{
 		public EnemyAI_Pass(){}
 
-		public override Command GetTurnCommand(){
-			return new Command (Command.TYPE.PASS, null, P);
+		public override void GetTurnCommand(){
+			Command c = new Command (Command.TYPE.PASS, null, P);
+			P.TABLE.Flush (P, c);
 		}
 	} // End EnemyAI_Pass class
 

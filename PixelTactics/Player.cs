@@ -48,7 +48,7 @@ namespace Tactics_CoreGameEngine
 		public TableTop TABLE;
 
 		public int BaseMaxHandSize = 5;
-		private int m_MaxHandSize = 0;
+		private int m_MaxHandSize = 5;
 		public int MaxHandSize {
 			get {
 				if (m_MaxHandSize < 0)
@@ -93,8 +93,8 @@ namespace Tactics_CoreGameEngine
 			}
 		}
 
-		public Command GetTurnCommand(){
-			return COMMANDINTERFACE.GetTurnCommand ();
+		public void GetTurnCommand(){
+			COMMANDINTERFACE.GetTurnCommand ();
 		}
 
 		public void DrawCard(){

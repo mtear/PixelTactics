@@ -50,8 +50,8 @@ namespace Tactics_CoreGameEngine
 		/// <param name="name">The name</param>
 		/// <param name="description">The Description.</param>
 		/// <param name="priority">The Application Priority.</param>
-		public Passive (string name, string description, int priority)
-			: base(name, description)
+		public Passive (string description, int priority)
+			: base("", description)
 		{
 			this.Priority = priority;
 		}

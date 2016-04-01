@@ -118,20 +118,37 @@ namespace Tactics_CoreGameEngine
 			//null value
 			D.Add("FOOBAR", "(none)");
 
+			//Keywords
+			D.Add("Upgrade", "Upgrade");
+			D.Add("Gravedigger", "Gravedigger");
+
 			//Passive abilities' descriptions
 			D.Add ("PA000001", "<b>Intercept</b>");
+			D.Add ("PA000002", "<b>Intercept</b><br>Life+1");
+			D.Add ("PA000003", "Attack+2");
+			D.Add ("PA000004", "Life+2");
+			D.Add ("PA000005", "<b>Overkill</b>");
+			D.Add ("PA000006", "<b>Rooted</b>");
 
 			//Trigger abilities' descriptions
 
 			//Ongoing abilities' descriptions
 
+			//Active abilities' descriptions
+
 			//Unit names
-			D.Add ("UN000001", "Adventurer");
-			D.Add ("UN000002", "Warrior");
-			D.Add ("UN000003", "Beefcake");
-			D.Add ("UN000004", "Citizen");
-			D.Add ("UN000005", "Slime");
-			D.Add ("UN000006", "Ogre");
+			D.Add ("UN000001", "Basic Adventurer");
+			D.Add ("UN000002", "Basic Warrior");
+			D.Add ("UN000003", "Basic Slime");
+			D.Add ("UN000004", "Basic Ogre");
+			D.Add ("UN000005", "Basic Wall");
+
+			//Types
+			D.Add("TYP000001", "Basic");
+			D.Add("TYP000002", "Human");
+			D.Add ("TYP000003", "Slime");
+			D.Add ("TYP000004", "Ogre");
+			D.Add ("TYP000005", "Wall");
 
 			return D;
 		}

@@ -42,7 +42,7 @@ namespace Tactics_CoreGameEngine
 	/// Template class.
 	/// </summary>
 	public class TFP : Passive{
-		public TFP() : base("TFP", "", 0){}
+		public TFP() : base("", 0){}
 
 		public override int ModifyDamage (int damage, Character target, Character user, Player PLAYER){
 			return damage;
@@ -101,9 +101,9 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	public class TestPassive1 : Passive //Give overkill
+	public class TestPassive1 : Passive //Give Intercept
 	{
-		public TestPassive1 () : base("PA000001", "PAD000001", 0)
+		public TestPassive1 () : base("PAD000001", 0)
 		{
 		}
 
@@ -128,7 +128,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
-			return intercept;
+			return true;
 		}
 
 		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
@@ -140,10 +140,327 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override int ModifyArmor (int armor, Character target, Character user, Player PLAYER){
-			if (target == user) {
-				target.AddEnhancement (new Enhancement (GetDescription(PLAYER), NameCode));
-				return armor + 2;
-			}
+			return armor;
+		}
+
+		public override bool ModifyZombie (bool zombie, Character target, Character user, Player PLAYER){
+			return zombie;
+		}
+
+		public override int ModifyDamageToX (int damage, Character user, Character attacker, Character defender){
+			return damage;
+		}
+
+		public override int ModifyMaxHandSize (int handsize, Character user, Player PLAYER){
+			return handsize;
+		}
+
+		public override bool ModifyTargetable (bool targetable, Character target, Character user, Player PLAYER){
+			return targetable;
+		}
+
+		public override bool ModifyPlayerTargetable (bool targetable, Character user, Player PLAYER){
+			return targetable;
+		}
+	}
+
+	public class TestPassive2 : Passive //Give Intercept, Life + 1
+	{
+		public TestPassive2 () : base("PAD000002", 0)
+		{
+		}
+
+		public override int ModifyDamage (int damage, Character target, Character user, Player PLAYER){
+			return damage;
+		}
+
+		public override int ModifyLife (int life, Character target, Character user, Player PLAYER){
+			if (target == user)
+				return life + 1;
+			return life;
+		}
+
+		public override bool ModifyAttackType (bool melee, Character target, Character user, Player PLAYER){
+			return melee;
+		}
+
+		public override bool RevealYourHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool RevealEnemyHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
+			return true;
+		}
+
+		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
+			return rooted;
+		}
+
+		public override bool ModifyOverkill (bool overkill, Character target, Character user, Player PLAYER){
+			return overkill;
+		}
+
+		public override int ModifyArmor (int armor, Character target, Character user, Player PLAYER){
+			return armor;
+		}
+
+		public override bool ModifyZombie (bool zombie, Character target, Character user, Player PLAYER){
+			return zombie;
+		}
+
+		public override int ModifyDamageToX (int damage, Character user, Character attacker, Character defender){
+			return damage;
+		}
+
+		public override int ModifyMaxHandSize (int handsize, Character user, Player PLAYER){
+			return handsize;
+		}
+
+		public override bool ModifyTargetable (bool targetable, Character target, Character user, Player PLAYER){
+			return targetable;
+		}
+
+		public override bool ModifyPlayerTargetable (bool targetable, Character user, Player PLAYER){
+			return targetable;
+		}
+	}
+
+	public class TestPassive3 : Passive //Give attack + 2
+	{
+		public TestPassive3 () : base("PAD000003", 0)
+		{
+		}
+
+		public override int ModifyDamage (int damage, Character target, Character user, Player PLAYER){
+			if (target == user)
+				return damage + 2;
+			return damage;
+		}
+
+		public override int ModifyLife (int life, Character target, Character user, Player PLAYER){
+			return life;
+		}
+
+		public override bool ModifyAttackType (bool melee, Character target, Character user, Player PLAYER){
+			return melee;
+		}
+
+		public override bool RevealYourHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool RevealEnemyHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
+			return true;
+		}
+
+		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
+			return rooted;
+		}
+
+		public override bool ModifyOverkill (bool overkill, Character target, Character user, Player PLAYER){
+			return overkill;
+		}
+
+		public override int ModifyArmor (int armor, Character target, Character user, Player PLAYER){
+			return armor;
+		}
+
+		public override bool ModifyZombie (bool zombie, Character target, Character user, Player PLAYER){
+			return zombie;
+		}
+
+		public override int ModifyDamageToX (int damage, Character user, Character attacker, Character defender){
+			return damage;
+		}
+
+		public override int ModifyMaxHandSize (int handsize, Character user, Player PLAYER){
+			return handsize;
+		}
+
+		public override bool ModifyTargetable (bool targetable, Character target, Character user, Player PLAYER){
+			return targetable;
+		}
+
+		public override bool ModifyPlayerTargetable (bool targetable, Character user, Player PLAYER){
+			return targetable;
+		}
+	}
+
+	public class TestPassive4 : Passive //Give life + 2
+	{
+		public TestPassive4 () : base("PAD000004", 0)
+		{
+		}
+
+		public override int ModifyDamage (int damage, Character target, Character user, Player PLAYER){
+			return damage;
+		}
+
+		public override int ModifyLife (int life, Character target, Character user, Player PLAYER){
+			if (user == target)
+				return life + 2;
+			return life;
+		}
+
+		public override bool ModifyAttackType (bool melee, Character target, Character user, Player PLAYER){
+			return melee;
+		}
+
+		public override bool RevealYourHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool RevealEnemyHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
+			return true;
+		}
+
+		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
+			return rooted;
+		}
+
+		public override bool ModifyOverkill (bool overkill, Character target, Character user, Player PLAYER){
+			return overkill;
+		}
+
+		public override int ModifyArmor (int armor, Character target, Character user, Player PLAYER){
+			return armor;
+		}
+
+		public override bool ModifyZombie (bool zombie, Character target, Character user, Player PLAYER){
+			return zombie;
+		}
+
+		public override int ModifyDamageToX (int damage, Character user, Character attacker, Character defender){
+			return damage;
+		}
+
+		public override int ModifyMaxHandSize (int handsize, Character user, Player PLAYER){
+			return handsize;
+		}
+
+		public override bool ModifyTargetable (bool targetable, Character target, Character user, Player PLAYER){
+			return targetable;
+		}
+
+		public override bool ModifyPlayerTargetable (bool targetable, Character user, Player PLAYER){
+			return targetable;
+		}
+	}
+
+	public class TestPassive5 : Passive //Give Intercept
+	{
+		public TestPassive5 () : base("PAD000005", 0)
+		{
+		}
+
+		public override int ModifyDamage (int damage, Character target, Character user, Player PLAYER){
+			return damage;
+		}
+
+		public override int ModifyLife (int life, Character target, Character user, Player PLAYER){
+			return life;
+		}
+
+		public override bool ModifyAttackType (bool melee, Character target, Character user, Player PLAYER){
+			return melee;
+		}
+
+		public override bool RevealYourHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool RevealEnemyHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
+			return true;
+		}
+
+		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
+			return rooted;
+		}
+
+		public override bool ModifyOverkill (bool overkill, Character target, Character user, Player PLAYER){
+			return true;
+		}
+
+		public override int ModifyArmor (int armor, Character target, Character user, Player PLAYER){
+			return armor;
+		}
+
+		public override bool ModifyZombie (bool zombie, Character target, Character user, Player PLAYER){
+			return zombie;
+		}
+
+		public override int ModifyDamageToX (int damage, Character user, Character attacker, Character defender){
+			return damage;
+		}
+
+		public override int ModifyMaxHandSize (int handsize, Character user, Player PLAYER){
+			return handsize;
+		}
+
+		public override bool ModifyTargetable (bool targetable, Character target, Character user, Player PLAYER){
+			return targetable;
+		}
+
+		public override bool ModifyPlayerTargetable (bool targetable, Character user, Player PLAYER){
+			return targetable;
+		}
+	}
+
+	public class TestPassive6 : Passive //Give Intercept
+	{
+		public TestPassive6 () : base("PAD000006", 0)
+		{
+		}
+
+		public override int ModifyDamage (int damage, Character target, Character user, Player PLAYER){
+			return damage;
+		}
+
+		public override int ModifyLife (int life, Character target, Character user, Player PLAYER){
+			return life;
+		}
+
+		public override bool ModifyAttackType (bool melee, Character target, Character user, Player PLAYER){
+			return melee;
+		}
+
+		public override bool RevealYourHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool RevealEnemyHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
+			return true;
+		}
+
+		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
+			return true;
+		}
+
+		public override bool ModifyOverkill (bool overkill, Character target, Character user, Player PLAYER){
+			return overkill;
+		}
+
+		public override int ModifyArmor (int armor, Character target, Character user, Player PLAYER){
 			return armor;
 		}
 

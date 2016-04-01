@@ -264,6 +264,16 @@ namespace Tactics_CoreGameEngine
 		}
 
 		/// <summary>
+		/// Gets the rarity.
+		/// </summary>
+		/// <value>The rarity.</value>
+		public int Rarity{
+			get{
+				return rarity;
+			}
+		}
+
+		/// <summary>
 		/// How much Life this unit has remaining
 		/// </summary>
 		/// <value>The remaining life.</value>
@@ -403,6 +413,8 @@ namespace Tactics_CoreGameEngine
 
 		private string name;
 
+		private int rarity;
+
 		//----------------------------------------------------------------
 
 		/// <summary>
@@ -416,7 +428,7 @@ namespace Tactics_CoreGameEngine
 		/// <param name="maxhealth">This unit's health</param>
 		/// <param name="typearray">A list of this unit's Types</param>
 		public Character (Player CONTROLLER, string name, int attack,
-			int maxhealth, params string[] typearray)
+			int maxhealth, int rarity, params string[] typearray)
 		{
 			//Initialize variables
 			this.CONTROLLER = CONTROLLER;
@@ -431,6 +443,7 @@ namespace Tactics_CoreGameEngine
 			this.m_melee = true;
 			this.types = new List<string>(typearray);
 			this._types = new List<string> (typearray);
+			this.rarity = rarity;
 
 			Triggers [0] = new List<Trigger> ();
 			Triggers [1] = new List<Trigger> ();
@@ -565,6 +578,7 @@ namespace Tactics_CoreGameEngine
 			              this.name,
 			              this._attack,
 			              this._maxhealth,
+				      this.rarity,
 				      ntypes.ToArray());
 			//Return the copy
 			return c;

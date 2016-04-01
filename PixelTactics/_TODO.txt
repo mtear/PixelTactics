@@ -1,4 +1,5 @@
 ﻿TODO:
 
 Comment things
-Animation interface
+Split sections of string loading into functions
+Rename test passives

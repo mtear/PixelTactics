@@ -42,6 +42,7 @@ namespace Tactics_CoreGameEngine
 		public bool Targetable = true;
 		public CommandInterface COMMANDINTERFACE;
 		public bool RevealHandEffect = false;
+		public int RecruitsRemaining = 1;
 
 		private int ROWS, COLUMNS;
 
@@ -269,6 +270,8 @@ namespace Tactics_CoreGameEngine
 
 			GAMEBOARD.ResetFlags ();
 			GAMEBOARD.ResetStunned ();
+
+			this.RecruitsRemaining = 1;
 		}
 
 		public void StartTurn(){

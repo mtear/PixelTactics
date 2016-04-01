@@ -130,6 +130,8 @@ namespace Tactics_CoreGameEngine
 			D.Add ("UN000002", "Warrior");
 			D.Add ("UN000003", "Beefcake");
 			D.Add ("UN000004", "Citizen");
+			D.Add ("UN000005", "Slime");
+			D.Add ("UN000006", "Ogre");
 
 			return D;
 		}

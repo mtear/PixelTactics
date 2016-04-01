@@ -45,16 +45,26 @@ namespace Tactics_CoreGameEngine
 	}
 
 	class UC1 : Character{
-		public UC1(Player CONTROLLER) : base(CONTROLLER, "UN000001", 1, 3){}
+		public UC1(Player CONTROLLER) : base(CONTROLLER, "UN000001", 1, 4){}
 	}
 
 	class UC2 : Character{
-		public UC2(Player CONTROLLER) : base(CONTROLLER, "UN000002", 1, 3){}
+		public UC2(Player CONTROLLER) : base(CONTROLLER, "UN000002", 2, 3){}
 	}
 
 	class UC3 : Character{
-		public UC3(Player CONTROLLER) : base(CONTROLLER, "UN000003", 15, 1){
+		public UC3(Player CONTROLLER) : base(CONTROLLER, "UN000003", 3, 2){
 			//Gravedigger = true; GravediggerPlus = 2;
+		}
+	}
+
+	class UC4 : Character{
+		public UC4(Player CONTROLLER) : base(CONTROLLER, "UN000005", 4, 1){}
+	}
+
+	class UC5 : Character{
+		public UC5(Player CONTROLLER) : base(CONTROLLER, "UN000006", 4, 6){
+			Upgrade = true;
 		}
 	}
 

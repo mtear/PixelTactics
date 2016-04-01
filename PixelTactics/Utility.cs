@@ -57,9 +57,17 @@ namespace Tactics_CoreGameEngine
 			deck.Add (new UC2 (P));
 			deck.Add (new UC2 (P));
 			deck.Add (new UC2 (P));
+			deck.Add (new UC2 (P));
 			deck.Add (new UC3 (P));
 			deck.Add (new UC3 (P));
 			deck.Add (new UC3 (P));
+			deck.Add (new UC3 (P));
+			deck.Add (new UC4 (P));
+			deck.Add (new UC4 (P));
+			deck.Add (new UC4 (P));
+			deck.Add (new UC4 (P));
+			deck.Add (new UC5 (P));
+			deck.Add (new UC5 (P));
 			return deck;
 		}
 

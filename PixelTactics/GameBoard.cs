@@ -89,6 +89,19 @@ namespace Tactics_CoreGameEngine
 			}
 		}
 
+		public List<Character> Units{
+			get{
+				List<Character> ret = new List<Character> ();
+				for (int i = 0; i < ROWS; i++) {
+					for (int a = 0; a < COLUMNS; a++) {
+						if (Board [a, i] != null)
+							ret.Add (Board [a, i]);
+					}
+				}
+				return ret;
+			}
+		}
+
 		//----------------------------------------------------------------
 
 		/// <summary>
@@ -439,6 +452,7 @@ namespace Tactics_CoreGameEngine
 
 			//Remove the Character from the Player's hand
 			PLAYER.HAND.Discard (c, PLAYER.GRAVEYARD);
+			PLAYER.RecruitsRemaining--;
 			return true;
 		}
 
@@ -976,6 +990,9 @@ namespace Tactics_CoreGameEngine
 		/// <param name="x">The column to recruit to</param>
 		/// <param name="y">The row to recruit to</param>
 		private bool ValidRecruit(Character c, int x, int y){
+			if (Owner.RecruitsRemaining == 0)
+				return false;
+
 			Character c2 = Board [x, y];
 			if (c2 == null) { //Nothing in the slot
 				if (c.Upgrade || c.Gravedigger) //upgrade or graved

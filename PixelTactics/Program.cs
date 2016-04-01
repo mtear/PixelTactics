@@ -41,7 +41,7 @@ namespace Tactics_CoreGameEngine
 			P1.LoadDeck (D1);
 			P2.LoadDeck (D2);
 
-			new TableTop ("EN", P1, P2);
+			new TableTop ("EN", P1, P2, new AnimationInterface());
 		}
 
 	} // End Program class

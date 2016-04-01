@@ -58,6 +58,7 @@
     <Compile Include="Target.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="Enhancement.cs" />
+    <Compile Include="AnimationInterface.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

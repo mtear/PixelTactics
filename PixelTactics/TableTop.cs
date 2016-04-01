@@ -46,10 +46,16 @@ namespace Tactics_CoreGameEngine
 
 		public StringTable STRINGTABLE;
 
+		public AnimationInterface ANIMATIONINTERFACE;
+
 		private int currentplayercount = 1;
 
-		public TableTop (String LCODE, Player P1, Player P2)
+		public TableTop (String LCODE, Player P1, Player P2,
+			AnimationInterface ANIMATIONINTERFACE)
 		{
+			ANIMATIONINTERFACE.SetTable (this);
+			this.ANIMATIONINTERFACE = ANIMATIONINTERFACE;
+
 			P1.TABLE = this;
 			P2.TABLE = this;
 			this.P1 = P1;
@@ -76,9 +82,15 @@ namespace Tactics_CoreGameEngine
 			//Find if this is a valid move or not
 			//Execute if it is
 			bool validturn = true;
+			bool successful = true;
 			try{
-				Command.Execute (c);
-			}catch{validturn = false;}
+				validturn = Command.Execute (c);
+				successful = validturn;
+			}catch
+			{
+				validturn = false;
+				successful = false;
+			}
 			validturn = c.Type == Command.TYPE.PASS;
 
 			//If it wasn't a valid turn, repeat grab
@@ -90,11 +102,9 @@ namespace Tactics_CoreGameEngine
 				//Successful turn,
 				//Switch player's and move on
 				SwitchTurn ();
-				Turn (CURRENTTURN);
 			}
 
-			P.EndTurn ();
-			return validturn;
+			return successful;
 		}
 
 		public void Turn(Player P){
@@ -125,6 +135,9 @@ namespace Tactics_CoreGameEngine
 		}
 
 		private void SwitchTurn(){
+			//End the current turn
+			CURRENTTURN.EndTurn ();
+
 			currentplayercount++;
 			if (currentplayercount == 1) {
 				FullAttack (CURRENTTURN);
@@ -133,6 +146,13 @@ namespace Tactics_CoreGameEngine
 				currentplayercount = 0;
 				CURRENTTURN = CURRENTTURN.ENEMY;
 			}
+
+			//Next turn
+			ANIMATIONINTERFACE.SwitchTurnBreak();
+		}
+
+		public void SwitchTurnContinue(){
+			Turn (CURRENTTURN);
 		}
 
 		public void EndGame(){
@@ -145,7 +165,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void Print(Player P){
-			Console.Clear ();
+//			Console.Clear ();
 			P.ENEMY.PrintTraps ();
 			P.ENEMY.GAMEBOARD.PrintBoard (true);
 			P.ENEMY.GAMEBOARD.PrintUnits ();

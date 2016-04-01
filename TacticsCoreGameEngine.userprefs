@@ -1,12 +1,12 @@
 ﻿<Properties StartupItem="PixelTactics/Tactics_CoreGameEngine.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PixelTactics/Player.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PixelTactics/_TODO.txt">
     <Files>
-      <File FileName="PixelTactics/_TODO.txt" Line="1" Column="1" />
-      <File FileName="PixelTactics/StringTable.cs" Line="1" Column="1" />
-      <File FileName="PixelTactics/Characters.cs" Line="1" Column="1" />
-      <File FileName="PixelTactics/Player.cs" Line="274" Column="31" />
-      <File FileName="PixelTactics/GameBoard.cs" Line="469" Column="5" />
+      <File FileName="PixelTactics/_TODO.txt" Line="6" Column="32" />
+      <File FileName="PixelTactics/Characters.cs" Line="77" Column="43" />
+      <File FileName="PixelTactics/StringTable.cs" Line="123" Column="37" />
+      <File FileName="PixelTactics/PassiveAbilities.cs" Line="45" Column="23" />
+      <File FileName="PixelTactics/Character.cs" Line="446" Column="25" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

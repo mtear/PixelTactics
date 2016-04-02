@@ -355,6 +355,10 @@ namespace Tactics_CoreGameEngine
 		/// </summary>
 		public bool Moved = true;
 		/// <summary>
+		/// Whether or not this unit has modified damage
+		/// </summary>
+		public bool ModifiedDamage = false;
+		/// <summary>
 		/// Whether or not this Character has the Upgrade keyword
 		/// </summary>
 		public bool Upgrade = false;
@@ -545,7 +549,7 @@ namespace Tactics_CoreGameEngine
 		/// </summary>
 		public void CheckDead(){
 			//If damage exceeds health
-			if (damage >= maxhealth) {
+			if (damage >= Life) {
 				if (!isdead) { //Just died
 					//Make trigger for dying
 					CONTROLLER.TABLE.PIPELINE.Add(new TriggerPacket(
@@ -673,7 +677,7 @@ namespace Tactics_CoreGameEngine
 		public override string ToString ()
 		{
 			if (Dead)
-				return "CORPSE";
+				return "CORPSE (" + Name + ")";
 			return "Name: " + Name + "\t" +
 				"ATK/HP/DMG: " + m_attack + (m_melee?"":"R") +
 				(overkill?"O":"") + " " + m_maxhealth + (intercept?"I":"")

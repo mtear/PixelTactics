@@ -76,7 +76,7 @@ namespace Tactics_CoreGameEngine
 
 		public bool Flush(Player P, Command c){
 			//Ignore if it's not this player's turn
-			if (P != CURRENTTURN)
+			if (P != CURRENTTURN || c == null)
 				return false;
 
 			//Find if this is a valid move or not
@@ -141,7 +141,20 @@ namespace Tactics_CoreGameEngine
 			currentplayercount++;
 			if (currentplayercount == 1) {
 				FullAttack (CURRENTTURN);
+			} else
+				SwitchTurn2 ();
+
+		}
+
+		public void AttackContinue(List<Character> Units){
+			if (Units.Count > 0) {
+				FullAttackLoop (Units);
+			} else {
+				SwitchTurn2 ();
 			}
+		}
+
+		private void SwitchTurn2(){
 			if (currentplayercount == 2) {
 				currentplayercount = 0;
 				CURRENTTURN = CURRENTTURN.ENEMY;
@@ -165,7 +178,8 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void Print(Player P){
-//			Console.Clear ();
+			//Console.Clear ();
+			Console.WriteLine("\n\n\n\n\n\n");
 			P.ENEMY.PrintTraps ();
 			P.ENEMY.GAMEBOARD.PrintBoard (true);
 			P.ENEMY.GAMEBOARD.PrintUnits ();
@@ -243,7 +257,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void FullAttack(Player P){
-			for (int a = 0; a < COLUMNS; a++) {
+			/*for (int a = 0; a < COLUMNS; a++) {
 				if (P.GAMEBOARD.Board [a,0] != null) {
 					P.GAMEBOARD.Melee (a, 0, a);
 				}
@@ -261,6 +275,35 @@ namespace Tactics_CoreGameEngine
 					&& !P.ENEMY.GAMEBOARD.Board [a,1].IsMelee) {
 					P.ENEMY.GAMEBOARD.Melee (a, 1, a);
 				}
+			}*/
+			List<Character> Units = P.GAMEBOARD.Units;
+			Units.AddRange(P.ENEMY.GAMEBOARD.Units);
+			Units.Sort((x,y) => x.CONTROLLER.GAMEBOARD.LocateInBoard(x).x.CompareTo(
+				y.CONTROLLER.GAMEBOARD.LocateInBoard(y).x));
+			FullAttackLoop (Units);
+		}
+
+		public void FullAttackLoop(List<Character> Units){
+			if (Units.Count == 0)
+				return;
+			Character attacker = null;
+			while (attacker == null && Units.Count > 0) {
+				attacker = Units [0];
+				Units.RemoveAt (0);
+				Point p = attacker.CONTROLLER.GAMEBOARD.LocateInBoard (attacker);
+				if (!attacker.CONTROLLER.GAMEBOARD.ValidAttack(p.x, p.y)) {
+					attacker = null;
+				}
+			}
+			if (attacker == null) {
+				SwitchTurn2 ();
+			} else {
+
+				Point p = attacker.CONTROLLER.GAMEBOARD.LocateInBoard (attacker);
+				Character target = attacker.CONTROLLER.ENEMY.GAMEBOARD.FindCharacterInMelee (p.x);
+				attacker.CONTROLLER.GAMEBOARD.Melee (p.x, p.y);
+				attacker.CONTROLLER.TABLE.ANIMATIONINTERFACE.AttackBreak (attacker, target, Units);
+
 			}
 		}
 

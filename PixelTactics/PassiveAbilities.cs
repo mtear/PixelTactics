@@ -128,7 +128,9 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
-			return true;
+			if (user == target)
+				return true;
+			return intercept;
 		}
 
 		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
@@ -193,7 +195,9 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
-			return true;
+			if (target == user)
+				return true;
+			return intercept;
 		}
 
 		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
@@ -258,7 +262,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
-			return true;
+			return intercept;
 		}
 
 		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
@@ -323,7 +327,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
-			return true;
+			return intercept;
 		}
 
 		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
@@ -359,7 +363,7 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	public class TestPassive5 : Passive //Give Intercept
+	public class TestPassive5 : Passive //Give Overkill
 	{
 		public TestPassive5 () : base("PAD000005", 0)
 		{
@@ -386,7 +390,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
-			return true;
+			return intercept;
 		}
 
 		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
@@ -394,7 +398,9 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override bool ModifyOverkill (bool overkill, Character target, Character user, Player PLAYER){
-			return true;
+			if (target == user)
+				return true;
+			return overkill;
 		}
 
 		public override int ModifyArmor (int armor, Character target, Character user, Player PLAYER){
@@ -422,7 +428,7 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	public class TestPassive6 : Passive //Give Intercept
+	public class TestPassive6 : Passive //Give Rooted
 	{
 		public TestPassive6 () : base("PAD000006", 0)
 		{
@@ -449,11 +455,13 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
-			return true;
+			return intercept;
 		}
 
 		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
-			return true;
+			if (target == user)
+				return true;
+			return rooted;
 		}
 
 		public override bool ModifyOverkill (bool overkill, Character target, Character user, Player PLAYER){

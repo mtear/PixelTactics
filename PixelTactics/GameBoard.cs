@@ -338,7 +338,7 @@ namespace Tactics_CoreGameEngine
 		/// <param name="x">The first x value.</param>
 		/// <param name="y">The first y value.</param>
 		/// <param name="col">The target column</param>
-		public bool Melee(int x, int y, int col){
+		public bool Melee(int x, int y){
 			//Get the attacker
 			Character attacker = Board [x, y];
 			//Return false if the character can't make an attack
@@ -347,7 +347,7 @@ namespace Tactics_CoreGameEngine
 
 			Player ENEMY = Owner.ENEMY;
 			//Get the target for this character to attack
-			Character target = ENEMY.GAMEBOARD.FindCharacterInMelee (col);
+			Character target = ENEMY.GAMEBOARD.FindCharacterInMelee (x);
 
 			//Create a Damage type
 			Damage.TYPE DT = Damage.TYPE.MELEE;
@@ -359,6 +359,8 @@ namespace Tactics_CoreGameEngine
 				target.AddDamage (GetDamage(DT, attacker.Attack, attacker, target));
 				//Calculate the Overkill keyword
 				for (int r = 0; r < 2; r++) {
+					if (target == null)
+						continue;
 					if (attacker.Overkill && target.Damage >= target.Life) {
 						int overkilldamage = target.Damage - target.Life;
 						target = ENEMY.GAMEBOARD.FindOverkillTarget (target);
@@ -495,6 +497,34 @@ namespace Tactics_CoreGameEngine
 					return true;
 			}
 			return false;
+		}
+
+		public bool ValidAttack(int x, int y){
+			//If no one is in this space, return false
+			if (Board [x, y] == null)
+				return false;
+			//Get the attacker
+			Character attacker = Board [x, y];
+			//Check status effects
+			if (attacker == null || attacker.Dead || attacker.Stunned)
+				return false;
+
+			//Look for blocking characters if no ranged attack
+			if (attacker.IsMelee && y == 1) {
+				//Check if the spot isn't empty
+				if (Board [x, 0] != null) {
+					//If an alive unit is there melee is blocked
+					if (!Board [x, 0].Dead)
+						return false;
+				}
+			}
+
+			//Check for 0 attack
+			if (attacker.Attack == 0 && !attacker.ModifiedDamage)
+				return false;
+
+			//Valid attack
+			return true;
 		}
 
 		/// <summary>

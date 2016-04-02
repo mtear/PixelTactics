@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Tactics_CoreGameEngine
 {
 	public class AnimationInterface
 	{
 
-		private TableTop TABLE;
+		public TableTop TABLE;
 
 		public AnimationInterface ()
 		{
@@ -17,6 +18,10 @@ namespace Tactics_CoreGameEngine
 
 		public virtual void SwitchTurnBreak(){
 			TABLE.SwitchTurnContinue ();
+		}
+
+		public virtual void AttackBreak(Character a, Character t, List<Character> Units){
+			TABLE.AttackContinue (Units);
 		}
 
 	}

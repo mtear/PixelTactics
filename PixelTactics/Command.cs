@@ -232,8 +232,7 @@ namespace Tactics_CoreGameEngine
 				case TYPE.MELEE:
 					ETP.Successful= c.PLAYER.GAMEBOARD.Melee(
 						int.Parse(c.Parameters[0]),
-						int.Parse(c.Parameters[1]),
-						int.Parse(c.Parameters[2]));
+						int.Parse(c.Parameters[1]));
 					break;
 				//Recruit a card from Hand into play
 				case TYPE.RECRUIT:

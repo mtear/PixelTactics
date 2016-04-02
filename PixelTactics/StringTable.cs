@@ -123,12 +123,12 @@ namespace Tactics_CoreGameEngine
 			D.Add("Gravedigger", "Gravedigger");
 
 			//Passive abilities' descriptions
-			D.Add ("PA000001", "<b>Intercept</b>");
-			D.Add ("PA000002", "<b>Intercept</b><br>Life+1");
-			D.Add ("PA000003", "Attack+2");
-			D.Add ("PA000004", "Life+2");
-			D.Add ("PA000005", "<b>Overkill</b>");
-			D.Add ("PA000006", "<b>Rooted</b>");
+			D.Add ("PAD000001", "<b>Intercept</b>");
+			D.Add ("PAD000002", "<b>Intercept</b><br>Life+1");
+			D.Add ("PAD000003", "Attack+2");
+			D.Add ("PAD000004", "Life+2");
+			D.Add ("PAD000005", "<b>Overkill</b>");
+			D.Add ("PAD000006", "<b>Rooted</b>");
 
 			//Trigger abilities' descriptions
 

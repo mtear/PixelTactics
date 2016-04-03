@@ -298,19 +298,21 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	public class TestPassive4 : Passive //Give life + 2
+	public class TestPassive4 : Passive //Give life + 1, attack + 1
 	{
 		public TestPassive4 () : base("PAD000004", 0)
 		{
 		}
 
 		public override int ModifyDamage (int damage, Character target, Character user, Player PLAYER){
+			if (user == target)
+				return damage + 1;
 			return damage;
 		}
 
 		public override int ModifyLife (int life, Character target, Character user, Player PLAYER){
 			if (user == target)
-				return life + 2;
+				return life + 1;
 			return life;
 		}
 

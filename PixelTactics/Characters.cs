@@ -39,7 +39,7 @@ namespace Tactics_CoreGameEngine
 **********************************************************************************/
 
 	class UC1 : Character{
-		public UC1(Player CONTROLLER) : base(CONTROLLER, "UN000001", 2, 3, 0,
+		public UC1(Player CONTROLLER) : base(CONTROLLER, "UN000001", 2, 3, 1,
 		"TYP000001", "TYP000002"){
 			this._AddPassive (new TestPassive2 (), 0);
 			this._AddPassive (new TestPassive1 (), 1);

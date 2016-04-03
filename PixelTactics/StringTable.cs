@@ -126,7 +126,7 @@ namespace Tactics_CoreGameEngine
 			D.Add ("PAD000001", "<b>Intercept</b>");
 			D.Add ("PAD000002", "<b>Intercept</b><br>Life+1");
 			D.Add ("PAD000003", "Attack+2");
-			D.Add ("PAD000004", "Life+2");
+			D.Add ("PAD000004", "Life+1\nAttack+1");
 			D.Add ("PAD000005", "<b>Overkill</b>");
 			D.Add ("PAD000006", "<b>Rooted</b>");
 

@@ -50,7 +50,8 @@ namespace Tactics_CoreGameEngine
 		public bool CheckAndExecute(TriggerPacket TP, List<TriggerPair> PIPELINE){
 			bool b = Triggered (TP);
 			if (b)
-				PIPELINE.Add (new TriggerPair (TP, this));
+				PIPELINE.Add (new TriggerPair (
+					new TriggerPacket(TP), this));
 			return b;
 		}
 
@@ -95,6 +96,16 @@ namespace Tactics_CoreGameEngine
 			this.USER = USER;
 			this.TARGET = TARGET;
 			this.INITIATOR = INITIATOR;
+		}
+		public TriggerPacket(TriggerPacket TP){
+			this.TYPE = TP.TYPE;
+			this.PLAYER = TP.PLAYER;
+			this.INITIATOR = TP.INITIATOR;
+			this.USER = TP.USER;
+			this.TARGET = TP.TARGET;
+			this.TRIGGERTARGET = TP.TRIGGERTARGET;
+			this.ACTIVETARGET = TP.ACTIVETARGET;
+			this.TPTARGET = TP.TPTARGET;
 		}
 	} // End TriggerPacket class
 

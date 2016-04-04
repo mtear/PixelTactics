@@ -78,6 +78,23 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
+	class UC10 : Character{ //Commando
+		public UC10(Player CONTROLLER) : base(CONTROLLER, "UN000010", 2, 2, 0,
+			"TYP000002"){
+			this._AddPassive (new TestPassive7 (), 0);
+			this._AddTrigger (new TA1 (), 1);
+			this._AddHandAbility (new AA1 ());
+		}
+	}
+
+	class UC14 : Character{ //Sneaky Trapper
+		public UC14(Player CONTROLLER) : base(CONTROLLER, "UN000014", 1, 2, 1,
+			"TYP000002"){
+			this._AddTrigger (new TA3 (), 0);
+			this._AddHandAbility (new TA2 ());
+		}
+	}
+
 
 } //End namespace
 

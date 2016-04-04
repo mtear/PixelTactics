@@ -257,25 +257,6 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void FullAttack(Player P){
-			/*for (int a = 0; a < COLUMNS; a++) {
-				if (P.GAMEBOARD.Board [a,0] != null) {
-					P.GAMEBOARD.Melee (a, 0, a);
-				}
-				if (P.ENEMY.GAMEBOARD.Board [a,0] != null) {
-					P.ENEMY.GAMEBOARD.Melee (a, 0, a);
-				}
-			}
-			//Ranged
-			for (int a = 0; a < COLUMNS; a++) {
-				if (P.GAMEBOARD.Board [a,1] != null
-					&& !P.GAMEBOARD.Board [a,1].IsMelee) {
-					P.GAMEBOARD.Melee (a, 1, a);
-				}
-				if (P.ENEMY.GAMEBOARD.Board [a,1] != null
-					&& !P.ENEMY.GAMEBOARD.Board [a,1].IsMelee) {
-					P.ENEMY.GAMEBOARD.Melee (a, 1, a);
-				}
-			}*/
 			List<Character> Units = P.GAMEBOARD.Units;
 			Units.AddRange(P.ENEMY.GAMEBOARD.Units);
 			Units.Sort((x,y) => x.CONTROLLER.GAMEBOARD.LocateInBoard(x).x.CompareTo(
@@ -318,13 +299,13 @@ namespace Tactics_CoreGameEngine
 				return;
 			}
 
-			//Check unit passives
+			//Check unit triggers
 			for (int i = 0; i < ROWS; i++) {
 				for (int a = 0; a < COLUMNS; a++) {
 					Player A = TP.PLAYER;
 					for(int j = 0; j < 2; j++){ //Go twice for both players
 						Character c = A.GAMEBOARD.Board [a, i];
-						if (c == null) {
+						if (c == null || c.Dead) {
 							A = TP.PLAYER.ENEMY;
 							continue;
 						}

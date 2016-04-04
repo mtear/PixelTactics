@@ -129,12 +129,17 @@ namespace Tactics_CoreGameEngine
 			D.Add ("PAD000004", "Life+1\nAttack+1");
 			D.Add ("PAD000005", "<b>Overkill</b>");
 			D.Add ("PAD000006", "<b>Rooted</b>");
+			D.Add ("PAD000007", "Attack+1");
 
 			//Trigger abilities' descriptions
+			D.Add("TA000001", "<b>Recruit:</b> Draw a card. Take 1 Damage");
+			D.Add ("TA000002", "<b>Trap:</b> Do 3 Damage to a Recruited Enemy Unit");
+			D.Add ("TA000003", "Attack+1 when an Enemy is Recruited");
 
 			//Ongoing abilities' descriptions
 
 			//Active abilities' descriptions
+			D.Add("AA000001", "Draw a card");
 
 			//Unit names
 			D.Add ("UN000001", "Basic Adventurer");
@@ -142,6 +147,8 @@ namespace Tactics_CoreGameEngine
 			D.Add ("UN000003", "Basic Slime");
 			D.Add ("UN000004", "Basic Ogre");
 			D.Add ("UN000005", "Basic Wall");
+			D.Add ("UN000010", "Commando");
+			D.Add ("UN000014", "Sneaky Trapper");
 
 			//Types
 			D.Add("TYP000001", "Basic");

@@ -495,4 +495,69 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
+	public class TestPassive7 : Passive //Give attack + 1
+	{
+		public TestPassive7 () : base("PAD000007", 0)
+		{
+		}
+
+		public override int ModifyDamage (int damage, Character target, Character user, Player PLAYER){
+			if (target == user)
+				return damage + 1;
+			return damage;
+		}
+
+		public override int ModifyLife (int life, Character target, Character user, Player PLAYER){
+			return life;
+		}
+
+		public override bool ModifyAttackType (bool melee, Character target, Character user, Player PLAYER){
+			return melee;
+		}
+
+		public override bool RevealYourHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool RevealEnemyHand (bool reveal, Character user, Player PLAYER){
+			return reveal;
+		}
+
+		public override bool ModifyIntercept (bool intercept, Character target, Character user, Player PLAYER){
+			return intercept;
+		}
+
+		public override bool ModifyRooted (bool rooted, Character target, Character user, Player PLAYER){
+			return rooted;
+		}
+
+		public override bool ModifyOverkill (bool overkill, Character target, Character user, Player PLAYER){
+			return overkill;
+		}
+
+		public override int ModifyArmor (int armor, Character target, Character user, Player PLAYER){
+			return armor;
+		}
+
+		public override bool ModifyZombie (bool zombie, Character target, Character user, Player PLAYER){
+			return zombie;
+		}
+
+		public override int ModifyDamageToX (int damage, Character user, Character attacker, Character defender){
+			return damage;
+		}
+
+		public override int ModifyMaxHandSize (int handsize, Character user, Player PLAYER){
+			return handsize;
+		}
+
+		public override bool ModifyTargetable (bool targetable, Character target, Character user, Player PLAYER){
+			return targetable;
+		}
+
+		public override bool ModifyPlayerTargetable (bool targetable, Character user, Player PLAYER){
+			return targetable;
+		}
+	}
+
 } //End namespace

@@ -49,8 +49,8 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	public class TestActive1 : Active{ //Do 1 to all enemies
-		public TestActive1 () : base ("TA1", ""){}
+	public class AA1 : Active{ //Do 1 to all enemies
+		public AA1 () : base ("TA1", "AA000001"){}
 
 		public override void Execute(Character target, Player PLAYER){
 			for (int i = 0; i < 3; i++) {

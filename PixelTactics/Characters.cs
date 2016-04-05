@@ -38,7 +38,7 @@ namespace Tactics_CoreGameEngine
 **********************************************************************************
 **********************************************************************************/
 
-	class UC1 : Character{
+	class UC1 : Character{ //Basic Adventurer
 		public UC1(Player CONTROLLER) : base(CONTROLLER, "UN000001", 2, 3, 1,
 		"TYP000001", "TYP000002"){
 			this._AddPassive (new TestPassive2 (), 0);
@@ -46,7 +46,7 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	class UC2 : Character{
+	class UC2 : Character{ //Basic Warrior
 		public UC2(Player CONTROLLER) : base(CONTROLLER, "UN000002", 3, 2, 0,
 			"TYP000001", "TYP000002"){
 			this._AddPassive (new TestPassive1 (), 0);
@@ -54,7 +54,7 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	class UC3 : Character{
+	class UC3 : Character{ //Basic Slime
 		public UC3(Player CONTROLLER) : base(CONTROLLER, "UN000003", 1, 1, 0,
 			"TYP000001", "TYP000003"){
 			this._AddPassive (new TestPassive3 (), 0);
@@ -62,7 +62,7 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	class UC4 : Character{
+	class UC4 : Character{ //Basic Ogre
 		public UC4(Player CONTROLLER) : base(CONTROLLER, "UN000004", 4, 5, 1,
 			"TYP000001", "TYP000004"){
 			this.Upgrade = true;
@@ -70,7 +70,7 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	class UC5 : Character{
+	class UC5 : Character{ //Basic wall
 		public UC5(Player CONTROLLER) : base(CONTROLLER, "UN000005", 0, 6, 0,
 			"TYP000001", "TYP000005"){
 			this._AddPassive (new TestPassive6 (), 0);
@@ -87,8 +87,18 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
+	class UC11 : Character{ //Bubba
+		public UC11(Player CONTROLLER) : base(CONTROLLER, "UN000011", 2, 3, 2,
+			"TYP000002"){
+			this.Gravedigger = true;
+			this._AddPassive (new TestPassive7 (), 0);
+			this._AddTrigger (new TA4 (), 1);
+			this._AddHandAbility (new AA2 ());
+		}
+	}
+
 	class UC14 : Character{ //Sneaky Trapper
-		public UC14(Player CONTROLLER) : base(CONTROLLER, "UN000014", 1, 2, 1,
+		public UC14(Player CONTROLLER) : base(CONTROLLER, "UN000014", 1, 1, 1,
 			"TYP000002"){
 			this._AddTrigger (new TA3 (), 0);
 			this._AddHandAbility (new TA2 ());

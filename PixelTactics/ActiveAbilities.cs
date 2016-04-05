@@ -49,41 +49,21 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	public class AA1 : Active{ //Do 1 to all enemies
+	public class AA1 : Active{ //Draw a card
 		public AA1 () : base ("TA1", "AA000001"){}
 
 		public override void Execute(Character target, Player PLAYER){
-			for (int i = 0; i < 3; i++) {
-				for (int a = 0; a < 3; a++) {
-					if(PLAYER.ENEMY.GAMEBOARD.Board[a,i] != null)
-						PLAYER.ENEMY.GAMEBOARD.Board [a, i].AddDamage (new Damage(Damage.TYPE.SPELL, 1, null));
-				}
-			}
+			PLAYER.DrawCard ();
 		}
 	}
 
-	public class TestActive2 : Active{ //Enemy discards 2 cards
-		public TestActive2 () : base ("TA2", ""){}
+	public class AA2 : Active{ //Each player discards a card. Draw a card
+		public AA2 () : base ("TA1", "AA000002"){}
 
 		public override void Execute(Character target, Player PLAYER){
+			PLAYER.HAND.DiscardRandomCard (PLAYER.GRAVEYARD);
 			PLAYER.ENEMY.HAND.DiscardRandomCard (PLAYER.ENEMY.GRAVEYARD);
-			PLAYER.ENEMY.HAND.DiscardRandomCard (PLAYER.ENEMY.GRAVEYARD);
-		}
-	}
-
-	public class TestActive3 : Active{ //lightning bolt
-		public TestActive3 () : base ("TA3", ""){this.RequestsTarget = true;}
-
-		public override void Execute(Character target, Player PLAYER){
-			if (TARGET.TARGETPLAYER) {
-				TARGET.PTARGET.AddDamage (new Damage (Damage.TYPE.SPELL, 3, target));
-			} else {
-				TARGET.CTARGET.AddDamage (new Damage (Damage.TYPE.SPELL, 3, target));
-			}
-		}
-
-		protected override bool ValidTarget(Target TARGET){
-			return !TARGET.TARGETPLAYER;
+			PLAYER.DrawCard ();
 		}
 	}
 

@@ -24,7 +24,6 @@
  */
 
 using System;
-using UnityEngine;
 
 namespace Tactics_CoreGameEngine
 {
@@ -103,8 +102,24 @@ namespace Tactics_CoreGameEngine
 		}
 
 		protected override void mExecute(TriggerPacket TP){
-			Debug.Log ("TRIGGERED" + TP.TARGET.BaseAttack);
 			TP.USER.BaseAttack++;
+		}
+	}
+
+	class TA4 : Trigger{ //Draw a card at start of turn
+		public TA4() : base("TTA1", "TA000004"){}
+
+		public override bool Triggered(TriggerPacket TP){
+			if (TP.TYPE == TYPE.STARTTURN) {
+				if (TP.INITIATOR == TP.USER.CONTROLLER) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		protected override void mExecute(TriggerPacket TP){
+			TP.USER.CONTROLLER.DrawCard ();
 		}
 	}
 

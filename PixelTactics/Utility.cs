@@ -50,24 +50,20 @@ namespace Tactics_CoreGameEngine
 		/// <param name="P">A Player to mark as the cards' Controller</param>
 		public static List<Character> GetDebugStarterDeck(Player P){
 			List<Character> deck = new List<Character> ();
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
-			deck.Add (new UC14 (P));
+			deck.Add (new UC1 (P));
+			deck.Add (new UC1 (P));
+			deck.Add (new UC2 (P));
+			deck.Add (new UC2 (P));
+			deck.Add (new UC3 (P));
+			deck.Add (new UC3 (P));
+			deck.Add (new UC4 (P));
+			deck.Add (new UC4 (P));
+			deck.Add (new UC5 (P));
+			deck.Add (new UC5 (P));
+			deck.Add (new UC10 (P));
+			deck.Add (new UC10 (P));
+			deck.Add (new UC11 (P));
+			deck.Add (new UC11 (P));
 			deck.Add (new UC14 (P));
 			deck.Add (new UC14 (P));
 			return deck;

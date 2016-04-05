@@ -351,7 +351,7 @@ namespace Tactics_CoreGameEngine
 						//Activate trap
 						if (activated) {
 							TriggerPacket TRAPPACKET = new TriggerPacket (Trigger.TYPE.TRAPACTIVATE,
-								traps[i].CONTROLLER, traps[i], traps[i].CONTROLLER);
+								traps[i].CONTROLLER, traps[i], traps[i].CONTROLLER, TP.TARGET);
 							TRAPPACKET.TRIGGERTARGET = (Trigger)traps[i].HandAbility;
 							TRAPPACKET.TPTARGET = TP;
 							if (TRAPPACKET.TRIGGERTARGET.COUNTER) {

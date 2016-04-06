@@ -332,6 +332,15 @@ namespace Tactics_CoreGameEngine
 			return null;
 		}
 
+		public int LocateTrap(Character c){
+			for (int i = 0; i < Owner.TRAPS.Length; i++) {
+				if (Owner.TRAPS [i] == c) {
+					return i;
+				}
+			}
+			return -1;
+		}
+
 		/// <summary>
 		/// Perform a melee attack with a character
 		/// </summary>

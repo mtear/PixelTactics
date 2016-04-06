@@ -42,14 +42,14 @@ namespace Tactics_CoreGameEngine
 		public UC1(Player CONTROLLER) : base(CONTROLLER, "UN000001", 2, 3, 1,
 		"TYP000001", "TYP000002"){
 			this._AddPassive (new TestPassive2 (), 0);
-			this._AddPassive (new TestPassive1 (), 1);
+			this._AddPassive (new TP1 (), 1);
 		}
 	}
 
 	class UC2 : Character{ //Basic Warrior
 		public UC2(Player CONTROLLER) : base(CONTROLLER, "UN000002", 3, 2, 0,
 			"TYP000001", "TYP000002"){
-			this._AddPassive (new TestPassive1 (), 0);
+			this._AddPassive (new TP1 (), 0);
 			this._AddPassive (new TestPassive2 (), 1);
 		}
 	}
@@ -78,6 +78,15 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
+	class UC9 : Character{ //Mystic Elf
+		public UC9(Player CONTROLLER) : base(CONTROLLER, "UN000009", 0, 5, 1,
+			"TYP000006"){
+			this._AddTrigger (new TA5 (), 0);
+			this._AddPassive (new TP1 (), 1);
+			this._AddHandAbility (new TO1 ());
+		}
+	}
+
 	class UC10 : Character{ //Commando
 		public UC10(Player CONTROLLER) : base(CONTROLLER, "UN000010", 2, 2, 0,
 			"TYP000002"){
@@ -88,10 +97,11 @@ namespace Tactics_CoreGameEngine
 	}
 
 	class UC11 : Character{ //Bubba
-		public UC11(Player CONTROLLER) : base(CONTROLLER, "UN000011", 2, 3, 2,
+		public UC11(Player CONTROLLER) : base(CONTROLLER, "UN000011", 2, 4, 2,
 			"TYP000002"){
 			this.Gravedigger = true;
 			this._AddPassive (new TestPassive7 (), 0);
+			this._AddTrigger (new TA1 (), 0);
 			this._AddTrigger (new TA4 (), 1);
 			this._AddHandAbility (new AA2 ());
 		}
@@ -102,6 +112,15 @@ namespace Tactics_CoreGameEngine
 			"TYP000002"){
 			this._AddTrigger (new TA3 (), 0);
 			this._AddHandAbility (new TA2 ());
+		}
+	}
+
+	class UC19 : Character{ //Paper Boy
+		public UC19(Player CONTROLLER) : base(CONTROLLER, "UN000019", 0, 2, 0,
+			"TYP000002"){
+			this._AddPassive (new TestPassive2 (), 0);
+			this._AddPassive (new TP9 (), 1);
+			this._AddHandAbility (new AA3 ());
 		}
 	}
 

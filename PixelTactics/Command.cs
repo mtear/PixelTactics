@@ -43,7 +43,7 @@ namespace Tactics_CoreGameEngine
 		/// </summary>
 		public enum TYPE{
 			MOVE, QUIT, PASS, MELEE, RECRUIT, DRAW, CLEARCORPSE,
-			ACTIVE, TRAP, ONGOING
+			ACTIVE, TRAP, ONGOING, NULL
 		}
 
 		//----------------------------------------------------------------
@@ -162,6 +162,18 @@ namespace Tactics_CoreGameEngine
 				case "active": return new Command(TYPE.ACTIVE, param, PLAYER);
 				case "trap": return new Command(TYPE.TRAP, param, PLAYER);
 				case "ongoing": return new Command(TYPE.ONGOING, param, PLAYER);
+				case "hand":
+					int i = int.Parse(param[0]);
+					if(PLAYER.HAND.Get(i).HandAbility.GetType()
+						.IsSubclassOf(typeof(Trigger)))
+						return new Command(TYPE.TRAP, param, PLAYER);
+					if(PLAYER.HAND.Get(i).HandAbility.GetType()
+						.IsSubclassOf(typeof(Active)))
+						return new Command(TYPE.ACTIVE, param, PLAYER);
+					if(PLAYER.HAND.Get(i).HandAbility.GetType()
+						.IsSubclassOf(typeof(OnGoing)))
+						return new Command(TYPE.ONGOING, param, PLAYER);
+					break;
 				}
 
 			}catch{}
@@ -267,15 +279,24 @@ namespace Tactics_CoreGameEngine
 				case TYPE.TRAP:
 					ETP.TP.TARGET = c.PLAYER.HAND.Get(
 						int.Parse(c.Parameters[0]));
+					int index = -1;
+					if(c.Parameters.Length > 1)
+						index = int.Parse(c.Parameters[1]);
 					ETP.Successful = c.PLAYER.Trap(
-						int.Parse(c.Parameters[0]));
+						int.Parse(c.Parameters[0]), index);
 					break;
 				//Play an ongoing effect from a card in hand
 				case TYPE.ONGOING:
 					ETP.TP.TARGET = c.PLAYER.HAND.Get(
 						int.Parse(c.Parameters[0]));
+					index = -1;
+					if(c.Parameters.Length > 1)
+						index = int.Parse(c.Parameters[1]);
 					ETP.Successful = c.PLAYER.OnGoing(
-						int.Parse(c.Parameters[0]));
+						int.Parse(c.Parameters[0]), index);
+					break;
+				case TYPE.NULL:
+					ETP.Successful = false;
 					break;
 			} // End switch
 

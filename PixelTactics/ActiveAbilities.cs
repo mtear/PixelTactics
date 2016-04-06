@@ -24,6 +24,7 @@
  */
 
 using System;
+using UnityEngine;
 
 namespace Tactics_CoreGameEngine
 {
@@ -64,6 +65,17 @@ namespace Tactics_CoreGameEngine
 			PLAYER.HAND.DiscardRandomCard (PLAYER.GRAVEYARD);
 			PLAYER.ENEMY.HAND.DiscardRandomCard (PLAYER.ENEMY.GRAVEYARD);
 			PLAYER.DrawCard ();
+		}
+	}
+
+	public class AA3 : Active{
+		public AA3 () : base ("TA1", "AA000003"){
+			this.RequestsTarget = true;
+		}
+
+		public override void Execute(Character target, Player PLAYER){
+			Debug.Log ("HEY");
+			TARGET.CTARGET.AddDamage (new Damage (Damage.TYPE.SPELL, 2, null));
 		}
 	}
 

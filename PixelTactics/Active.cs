@@ -77,26 +77,25 @@ namespace Tactics_CoreGameEngine
 		public void ExportEffectToPipeline(TriggerPacket TP, List<TriggerPair> PIPELINE){
 			PIPELINE.Add (new TriggerPair (TP, null));
 		}
-
-		/// <summary>
-		/// Gets the Target for this ability.
-		/// </summary>
-		/// <returns><c>true</c>, if target was gotten, <c>false</c> otherwise.</returns>
-		/// <param name="P">The Player to reference</param>
-		public bool GetTarget(Player P){
+			
+		public void GetTarget(Player P, Character c){
 			//If this ability doesn't need a target,
 			//	no need to get one
-			if (!RequestsTarget)
-				return true;
+			if (!RequestsTarget) {
+				P.ActiveContinue (true, c, null);
+				return;
+			}
 			
 			//Get the target from the Command Interface
-			TARGET = P.COMMANDINTERFACE.GetTarget ();
+			P.COMMANDINTERFACE.GetTarget (c);
+		}
 
+		public bool TargetContinue(){
 			//If the target isn't good return no Target acquired
 			if (TARGET == null || !ValidTarget(TARGET))
 				return false;
 			//If we're targeting a creature and it's not targetable return false
-			if (!TARGET.TARGETPLAYER && !TARGET.CTARGET.Targetable)
+			if (!TARGET.TARGETPLAYER && (TARGET.CTARGET == null || TARGET.CTARGET.Targetable))
 				return false;
 			//If we're targeting a player and it's a bad target
 			if (TARGET.TARGETPLAYER && TARGET.PTARGET == null)

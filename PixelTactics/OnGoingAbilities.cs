@@ -52,5 +52,15 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
+	public class TO1 : OnGoing{ //Friendlies get Armor 1
+		public TO1() : base("TOT", "TO000001", 4){
+			this.Passives.Add (new TP8 ());
+		}
+
+		public override void Discard (Player P){
+
+		}
+	}
+
 } //End namespace
 

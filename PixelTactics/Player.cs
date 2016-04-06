@@ -124,6 +124,13 @@ namespace Tactics_CoreGameEngine
 			return g;
 		}
 
+		public bool AddTrap(Character c, int index){
+			if (TRAPS [index] != null)
+				return false;
+			TRAPS [index] = c;
+			return true;
+		}
+
 		public void LoseFromDrawOut(){
 			if (DECK.Count == 0) {
 				Life = 0;
@@ -139,28 +146,40 @@ namespace Tactics_CoreGameEngine
 			if (a == null || a.GetType().IsSubclassOf(typeof(Trigger)))
 				return false;
 			//Get the target if there is any and return false if it fails
-			bool t = a.GetTarget(this);
-			if (!t)
-				return false;
-			
+			//Request the target from the interface, continue in ActiveContinue
+			a.GetTarget(this, c);
+			return true;
+		}
+
+		public void ActiveContinue(bool t, Character c, Target T){
+			if (!t) //Change
+				TABLE.Flush (this, new Command (Command.TYPE.NULL, null, this));
+
+			Active a = (Active)c.HandAbility;
+			a.TARGET = T;
+
 			//Add pipeline event for the active
 			TriggerPacket TP = new TriggerPacket (Trigger.TYPE.PLAYORDER,
-				                   this, c, this);
+				this, c, this);
 			TP.ACTIVETARGET = a;
 			TABLE.PIPELINE.Add (TP);
 
 			HAND.Discard (c, GRAVEYARD);
-			return true;
+			TABLE.Flush (this, new Command (Command.TYPE.NULL, null, this));
 		}
 
-		public bool Trap(int handindex){
+		public bool Trap(int handindex, int index){
 			Character c = HAND.Get (handindex);
 			if (c == null)
 				return false;
 			Ability a = (Ability)c.HandAbility;
 			if (a == null || !a.GetType().IsSubclassOf(typeof(Trigger)))
 				return false;
-			bool g = AddTrap (c);
+			bool g;
+			if (index == -1)
+				g = AddTrap (c);
+			else
+			    g = AddTrap (c, index);
 			if (g) {
 				HAND.Discard (c);
 				TABLE.PIPELINE.Add (new TriggerPacket (Trigger.TYPE.PLAYTRAP, this, c, this));
@@ -181,14 +200,18 @@ namespace Tactics_CoreGameEngine
 			TABLE.PIPELINE.Add (new TriggerPacket (Trigger.TYPE.PLAYERHEAL, this, D.Source, D.Source.CONTROLLER));
 		}
 
-		public bool OnGoing(int handindex){
+		public bool OnGoing(int handindex, int index){
 			Character c = HAND.Get (handindex);
 			if (c == null)
 				return false;
 			Ability a = (Ability)c.HandAbility;
 			if (a == null || !a.GetType().IsSubclassOf(typeof(OnGoing)))
 				return false;
-			bool g = AddTrap (c);
+			bool g;
+			if (index == -1)
+				g = AddTrap (c);
+			else
+				g = AddTrap (c, index);
 			if (g) {
 				HAND.Discard (c);
 				TABLE.PIPELINE.Add (new TriggerPacket (Trigger.TYPE.PLAYONGOING, this, c, this));

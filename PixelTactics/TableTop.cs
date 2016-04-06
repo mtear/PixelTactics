@@ -79,6 +79,14 @@ namespace Tactics_CoreGameEngine
 			if (P != CURRENTTURN || c == null)
 				return false;
 
+			//If the command is an active, break out and handle
+			if (c.Type == Command.TYPE.ACTIVE) {
+				//Go to the start active
+				//Continue later
+				P.Active (int.Parse (c.Parameters [0]));
+				return false;
+			}
+
 			//Find if this is a valid move or not
 			//Execute if it is
 			bool validturn = true;

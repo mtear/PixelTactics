@@ -41,6 +41,8 @@ namespace Tactics_CoreGameEngine
 		/// </summary>
 		public Player P;
 
+		public Target TARGET;
+
 		/// <summary>
 		/// Initializes a new instance of the 
 		/// <see cref="Tactics_CoreGameEngine.CommandInterface"/> class.
@@ -67,12 +69,12 @@ namespace Tactics_CoreGameEngine
 		/// By default it let's the user type via the terminal
 		/// </summary>
 		/// <returns>The target.</returns>
-		public virtual Target GetTarget(){
+		public virtual void GetTarget(Character c){
 			Console.Write("*TARGET: ");
 			String t = Console.ReadLine ();
 			//Create a Target by parsing the string
 			Target TARGET = Target.Parse (t, P);
-			return TARGET;
+			this.TARGET = TARGET;
 		}
 	} // End CommandInterface class
 

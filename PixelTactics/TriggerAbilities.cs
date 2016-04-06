@@ -72,13 +72,14 @@ namespace Tactics_CoreGameEngine
 		}
 	}
 
-	class TA2 : Trigger{ //Trap: Do 3 Damage to a Recruited Enemy Unit
+	class TA2 : Trigger{ //Trap: Do 3 Damage to a Recruited Front Enemy Unit
 		public TA2() : base("TTA1", "TA000002"){}
 
 		public override bool Triggered(TriggerPacket TP){
 			if (TP.TYPE == TYPE.RECRUIT) {
 				if (TP.USER.CONTROLLER != TP.TARGET.CONTROLLER) {
-					return true;
+					if(TP.TARGET.CONTROLLER.GAMEBOARD.LocateInBoard(TP.TARGET).y == 0)
+						return true;
 				}
 			}
 			return false;
@@ -120,6 +121,24 @@ namespace Tactics_CoreGameEngine
 
 		protected override void mExecute(TriggerPacket TP){
 			TP.USER.CONTROLLER.DrawCard ();
+		}
+	}
+
+	class TA5 : Trigger{ //Heal 2 at start of turn
+		public TA5() : base("TTA1", "TA000005"){}
+
+		public override bool Triggered(TriggerPacket TP){
+			if (TP.TYPE == TYPE.STARTTURN) {
+				if (TP.INITIATOR == TP.USER.CONTROLLER) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		protected override void mExecute(TriggerPacket TP){
+			TP.USER.HealDamage (
+				new Damage (Damage.TYPE.HEAL, 2, TP.USER));
 		}
 	}
 

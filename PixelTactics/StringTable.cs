@@ -130,18 +130,23 @@ namespace Tactics_CoreGameEngine
 			D.Add ("PAD000005", "<b>Overkill</b>");
 			D.Add ("PAD000006", "<b>Rooted</b>");
 			D.Add ("PAD000007", "Attack+1");
+			D.Add ("PAD000008", "Armor+1");
+			D.Add ("PAD000009", "Attack+3, Ranged Attack");
 
 			//Trigger abilities' descriptions
 			D.Add("TA000001", "<b>Recruit:</b> Draw a card. Take 1 Damage");
-			D.Add ("TA000002", "<b>Trap:</b> Do 3 Damage to a Recruited Enemy Unit");
+			D.Add ("TA000002", "<b>Trap:</b> Do 3 Damage to a Recruited Front Enemy Unit");
 			D.Add ("TA000003", "Attack+1 when an Enemy is Recruited");
 			D.Add ("TA000004", "Draw a card at start of turn");
+			D.Add ("TA000005", "Heal 2 at start of turn");
 
 			//Ongoing abilities' descriptions
+			D.Add("TO000001", "Friendlies get Armor 1");
 
 			//Active abilities' descriptions
 			D.Add("AA000001", "Draw a card");
 			D.Add("AA000002", "Each Player discards a card. Draw a card");
+			D.Add ("AA000003", "Do 2 Damage to a Unit");
 
 			//Unit names
 			D.Add ("UN000001", "Basic Adventurer");
@@ -149,16 +154,19 @@ namespace Tactics_CoreGameEngine
 			D.Add ("UN000003", "Basic Slime");
 			D.Add ("UN000004", "Basic Ogre");
 			D.Add ("UN000005", "Basic Wall");
+			D.Add ("UN000009", "Mystic Elf");
 			D.Add ("UN000010", "Commando");
 			D.Add ("UN000011", "Bubba");
 			D.Add ("UN000014", "Sneaky Trapper");
+			D.Add ("UN000019", "Paper Boy");
 
 			//Types
 			D.Add("TYP000001", "Basic");
 			D.Add("TYP000002", "Human");
 			D.Add ("TYP000003", "Slime");
-			D.Add ("TYP000004", "Ogre");
+			D.Add ("TYP000004", "Monster");
 			D.Add ("TYP000005", "Wall");
+			D.Add ("TYP000006", "Elf");
 
 			return D;
 		}

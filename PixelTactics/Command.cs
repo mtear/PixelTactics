@@ -224,7 +224,7 @@ namespace Tactics_CoreGameEngine
 						int.Parse (c.Parameters [2]),
 						int.Parse (c.Parameters [3]), false);
 					if(ETP.Successful){
-						c.PLAYER.TABLE.SettleState(c.PLAYER);
+						//c.PLAYER.TABLE.SettleState(c.PLAYER);
 						ETP.Successful= c.PLAYER.GAMEBOARD.Move (
 							int.Parse (c.Parameters [0]),
 							int.Parse (c.Parameters [1]),

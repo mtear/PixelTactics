@@ -289,8 +289,9 @@ namespace Tactics_CoreGameEngine
 					}
 				}
 			}
-			TABLE.SettleState (this);
+		}
 
+		public void PostEndTurn(){
 			GAMEBOARD.ResetFlags ();
 			GAMEBOARD.ResetStunned ();
 

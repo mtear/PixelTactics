@@ -24,6 +24,10 @@ namespace Tactics_CoreGameEngine
 			TABLE.AttackContinue (Units);
 		}
 
+		public virtual void SettleBreak(){
+			TABLE.SettleState (TABLE.CURRENTTURN);
+		}
+
 	}
 }
 

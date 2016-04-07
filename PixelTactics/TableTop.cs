@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Tactics_CoreGameEngine
 {
@@ -50,6 +51,8 @@ namespace Tactics_CoreGameEngine
 
 		private int currentplayercount = 1;
 
+		private int STATE = 0;
+
 		public TableTop (String LCODE, Player P1, Player P2,
 			AnimationInterface ANIMATIONINTERFACE)
 		{
@@ -71,7 +74,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void Play(Player PLAYER){
-			Turn (PLAYER); //first turn
+			Turn1 (PLAYER); //first turn
 		}
 
 		public bool Flush(Player P, Command c){
@@ -103,9 +106,9 @@ namespace Tactics_CoreGameEngine
 
 			//If it wasn't a valid turn, repeat grab
 			if (!validturn) {
+				STATE = 1;
 				SettleState (P);
-				Print (P);
-				TakeTurn (P);
+				//Will resume in Turn3
 			} else {
 				//Successful turn,
 				//Switch player's and move on
@@ -115,28 +118,34 @@ namespace Tactics_CoreGameEngine
 			return successful;
 		}
 
-		public void Turn(Player P){
+		public void Turn1(Player P){
+			Debug.Log ("Turn1 " + P.Name);
 			CURRENTTURN = P;
+			STATE = 0;
 
 			//Add Start turn trigger event
 			PIPELINE.Add (new TriggerPacket (Trigger.TYPE.STARTTURN,
 				P, null, P));
 			SettleState (P);
+			//Will resume in Turn2
+		}
 
-			P.StartTurn ();
-			if (!firstturn) P.DrawCard (); //Draw if not the first turn
+		public void Turn2(){
+			Debug.Log ("Turn2 " + CURRENTTURN.Name);
+			CURRENTTURN.StartTurn ();
+			if (!firstturn) CURRENTTURN.DrawCard (); //Draw if not the first turn
 			else firstturn = false;
-			SettleState(P);
-			Print (P);
-			TakeTurn (P);
+			SettleState(CURRENTTURN);
+			//Will resume in Turn3
+		}
+
+		public void Turn3(){
+			Debug.Log ("Turn3 " + CURRENTTURN.Name);
+			Print (CURRENTTURN);
+			TakeTurn (CURRENTTURN);
 		}
 
 		public void TakeTurn(Player PLAYER){
-			if (!VALID) {
-				EndGame ();
-				return;
-			}
-
 			//Kick off Command grabbing
 			PLAYER.GetTurnCommand ();
 			//Code will resume in Flush()
@@ -145,13 +154,19 @@ namespace Tactics_CoreGameEngine
 		private void SwitchTurn(){
 			//End the current turn
 			CURRENTTURN.EndTurn ();
+			SettleState (CURRENTTURN);
+			//Will resume in Turn4
+		}
+
+		private void Turn4(){
+			Debug.Log ("Turn4 " + CURRENTTURN.Name);
+			CURRENTTURN.PostEndTurn ();
 
 			currentplayercount++;
 			if (currentplayercount == 1) {
 				FullAttack (CURRENTTURN);
 			} else
 				SwitchTurn2 ();
-
 		}
 
 		public void AttackContinue(List<Character> Units){
@@ -163,6 +178,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		private void SwitchTurn2(){
+			Debug.Log ("SWITCHING TURN!");
 			if (currentplayercount == 2) {
 				currentplayercount = 0;
 				CURRENTTURN = CURRENTTURN.ENEMY;
@@ -173,7 +189,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void SwitchTurnContinue(){
-			Turn (CURRENTTURN);
+			Turn1 (CURRENTTURN);
 		}
 
 		public void EndGame(){
@@ -218,18 +234,32 @@ namespace Tactics_CoreGameEngine
 			while (EFFECTPIPELINE.Count > 0) {
 				PopEffect ();
 			}
-			if (haseffects || PIPELINE.Count > 0)
-				SettleState (P);
-
-			//Check dead players
-			if (P.Life <= 0 || P.ENEMY.Life <= 0) {
-				VALID = false;
-				if (P.Life == 0 && P.ENEMY.Life == 0)
-					WINNER = null;
-				else if (P.Life == 0)
-					WINNER = P.ENEMY;
-				else
-					WINNER = P;
+			if (haseffects || PIPELINE.Count > 0) {
+				ANIMATIONINTERFACE.SettleBreak (); //Recursive call
+				//Resume back here in SettleState
+			} else { //End recursion
+				//Check dead players
+				/*if (P.Life <= 0 || P.ENEMY.Life <= 0) {
+					VALID = false;
+					if (P.Life == 0 && P.ENEMY.Life == 0)
+						WINNER = null;
+					else if (P.Life == 0)
+						WINNER = P.ENEMY;
+					else
+						WINNER = P;
+					
+				}*/
+				//Where to go from here
+				if (STATE == 0) {
+					STATE++;
+					Turn2 ();
+				} else if (STATE == 1) {
+					STATE++;
+					Turn3 ();
+				} else if (STATE == 2) { //ending turn
+					STATE++;
+					Turn4 ();
+				}
 					
 			}
 		}
@@ -265,6 +295,7 @@ namespace Tactics_CoreGameEngine
 		}
 
 		public void FullAttack(Player P){
+			Debug.Log ("ATTACKING!");
 			List<Character> Units = P.GAMEBOARD.Units;
 			Units.AddRange(P.ENEMY.GAMEBOARD.Units);
 			Units.Sort((x,y) => x.CONTROLLER.GAMEBOARD.LocateInBoard(x).x.CompareTo(
